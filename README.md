@@ -67,3 +67,9 @@ Compliance with Best Practices: Following the OWASP Top Ten recommendations is c
 Integration with Development Workflow: SAST tools can be integrated into the development workflow to automate security testing as part of the continuous integration/continuous deployment (CI/CD) pipeline. By incorporating SAST scans into the development process, organizations can detect and fix security issues early in the software development lifecycle, reducing the likelihood of OWASP Top Ten vulnerabilities making their way into production.
 
 Overall, SAST tools play a crucial role in helping organizations address the security risks outlined in the OWASP Top Ten by identifying vulnerabilities in the codebase and facilitating their remediation during the development process.
+
+
+
+
+
+https://cybr.com/courses/beginners-guide-to-aws-cloudtrail-for-security/lessons/about-the-course-7/
