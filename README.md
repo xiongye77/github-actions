@@ -39,6 +39,11 @@ By addressing the vulnerabilities outlined in the OWASP Top Ten, organizations c
 
 Static Application Security Testing (SAST) is a method of analyzing source code, bytecode, or binary code to find security vulnerabilities that may exist within an application's codebase. It is typically performed during the development phase of the software development lifecycle.
 
+![image](https://github.com/xiongye77/github-actions-devsecops/assets/36766101/1b8f7c2a-3324-4950-8bfd-af53a7f9c081)
+![image](https://github.com/xiongye77/github-actions-devsecops/assets/36766101/26ed837b-b139-4b0c-a6aa-4be0ca2eae0d)
+![image](https://github.com/xiongye77/github-actions-devsecops/assets/36766101/b266021f-31bf-484d-a80d-d2befd852cfe)
+
+
 The relationship between SAST and the OWASP Top Ten is primarily about how SAST tools can help identify and mitigate the security risks outlined in the OWASP Top Ten. Here's how SAST and the OWASP Top Ten are related:
 
 Identification of Vulnerabilities: SAST tools analyze source code to identify potential vulnerabilities such as injection flaws, broken authentication, sensitive data exposure, and others, which are part of the OWASP Top Ten. By scanning the codebase, SAST tools can detect security weaknesses that could lead to the exploitation of these OWASP Top Ten vulnerabilities.
