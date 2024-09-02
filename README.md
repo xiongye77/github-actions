@@ -9,6 +9,13 @@
 ![image](https://github.com/user-attachments/assets/7701727e-a58f-4ec7-9d4c-1a45acb6f20d)
 ![image](https://github.com/user-attachments/assets/efba3400-a185-4012-953c-4188dd03d5f8)
 
+
+
+![image](https://github.com/user-attachments/assets/ad567116-9c43-4faa-815a-79e11e0160cd)
+![image](https://github.com/user-attachments/assets/0985b53d-52f6-407a-8225-a8b837dbcabc)
+
+
+
 # Static Application Security Testing (SAST)  and  OWASP Top Ten
 The OWASP Top Ten is a list of the top ten most critical web application security risks. It is compiled by the Open Web Application Security Project (OWASP), a nonprofit organization focused on improving software security.
 
