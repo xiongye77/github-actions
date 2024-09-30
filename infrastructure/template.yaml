@@ -1,153 +1,198 @@
-name: Deploy Serverless Application
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Serverless application with API Gateway and Lambda functions for CRUD operations on DynamoDB. Add Cloudfront for CDN and WAF protection. 
 
-on:
-  push:
-    branches:
-      - github-action-api-gw-lambda-dynamodb
-permissions:
-  id-token: write  # Required for OIDC authentication
-  contents: read   # Provides access to repository contents
+Resources:
 
-jobs:
-  build-deploy:
-    runs-on: ubuntu-latest
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Users
+      AttributeDefinitions:
+        - AttributeName: UserID
+          AttributeType: S
+      KeySchema:
+        - AttributeName: UserID
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST  # On-demand billing
 
-    steps:
-      # Step 1: Checkout the repository
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+  CreateUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: CreateUserFunction
+      Handler: app.handler
+      Runtime: python3.10
+      CodeUri: ../lambdas/create_user/
+      Description: Creates a new user in DynamoDB
+      MemorySize: 128
+      Timeout: 10
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UsersTable
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            Path: /users
+            Method: post
+            RestApiId: !Ref ApiGateway
 
-      # Step 2: Set up Python environment
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+  GetUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: GetUserFunction
+      Handler: app.handler
+      Runtime: python3.10
+      CodeUri: ../lambdas/get_user/
+      Description: Retrieves a user from DynamoDB
+      MemorySize: 128
+      Timeout: 10
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref UsersTable
+      Events:
+        GetUser:
+          Type: Api
+          Properties:
+            Path: /users/{UserID}
+            Method: get
+            RestApiId: !Ref ApiGateway
 
-      # Step 3: Install AWS SAM CLI
-      - name: Install AWS SAM CLI
-        run: |
-          pip install aws-sam-cli
+  UpdateUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: UpdateUserFunction
+      Handler: app.handler
+      Runtime: python3.10
+      CodeUri: ../lambdas/update_user/
+      Description: Updates a user in DynamoDB
+      MemorySize: 128
+      Timeout: 10
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UsersTable
+      Events:
+        UpdateUser:
+          Type: Api
+          Properties:
+            Path: /users/{UserID}
+            Method: put
+            RestApiId: !Ref ApiGateway
 
-      # Step 4: Configure AWS Credentials using OIDC
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: arn:aws:iam::582140066777:role/github-action-role
-          aws-region: us-east-1
+  DeleteUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: DeleteUserFunction
+      Handler: app.handler
+      Runtime: python3.10
+      CodeUri: ../lambdas/delete_user/
+      Description: Deletes a user from DynamoDB
+      MemorySize: 128
+      Timeout: 10
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UsersTable
+      Events:
+        DeleteUser:
+          Type: Api
+          Properties:
+            Path: /users/{UserID}
+            Method: delete
+            RestApiId: !Ref ApiGateway
 
-      # Step 5: Build the SAM application
-      - name: Build SAM Application
-        run: |
-          sam build --template-file infrastructure/template.yaml
+  ApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: UsersApi
+      StageName: Prod
+      EndpointConfiguration: REGIONAL
+      Cors:
+        AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        AllowOrigin: "'*'"
+  MyWebACL:
+    Type: AWS::WAFv2::WebACL
+    Properties:
+      DefaultAction:
+        Allow: {}
+      Scope: CLOUDFRONT
+      VisibilityConfig:
+        CloudWatchMetricsEnabled: true
+        MetricName: MyWAF
+        SampledRequestsEnabled: true
+      Rules:
+        - Name: AWSManagedCommonRules
+          Priority: 1
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesCommonRuleSet
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: AWSManagedCommonRulesMetric
+        - Name: AWSManagedSQLiRules
+          Priority: 2
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesSQLiRuleSet
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: AWSManagedSQLiRulesMetric
+        - Name: BlockBadRequests
+          Priority: 3
+          Action:
+            Block: {}
+          VisibilityConfig:
+            CloudWatchMetricsEnabled: true
+            MetricName: BlockBadRequests
+            SampledRequestsEnabled: true
+          Statement:
+            RateBasedStatement:
+              Limit: 2000
+              AggregateKeyType: IP
+        
+  MyCloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: !Sub "${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com"
+            Id: ApiOrigin
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+        Enabled: true
+        DefaultCacheBehavior:
+          TargetOriginId: ApiOrigin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: 
+            - GET
+            - HEAD
+          CachedMethods:
+            - GET
+            - HEAD
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad   
+          OriginRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
+        DefaultRootObject: ""
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+        HttpVersion: http2
+        PriceClass: PriceClass_100
+        WebACLId: !GetAtt MyWebACL.Arn
+  
 
-      # Step 6: Deploy the SAM application
-      - name: Deploy SAM Application
-        run: |
-          STACK_NAME=my-serverless-app
-          aws cloudformation describe-stacks --stack-name $STACK_NAME || STACK_EXISTS=$?
-          echo $STACK_EXISTS
-          
-          if aws cloudformation describe-stacks --stack-name $STACK_NAME ; then
-            echo "Stack does not exist. Creating new stack: $STACK_NAME"
-            sam deploy \
-              --stack-name $STACK_NAME \
-              --resolve-s3 \
-              --template-file .aws-sam/build/template.yaml \
-              --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
-              --no-confirm-changeset \
-              --no-fail-on-empty-changeset
-          else
-            echo "Stack exists. Updating stack: $STACK_NAME"
-            sam deploy \
-              --stack-name $STACK_NAME \
-              --resolve-s3 \
-              --template-file .aws-sam/build/template.yaml \
-              --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
-              --no-confirm-changeset \
-              --no-fail-on-empty-changeset
-          fi 
-      - name: Check for rollback status
-        id: check_rollback
-        run: |
-          STACK_NAME=my-serverless-app
-          STACK_STATUS=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query "Stacks[0].StackStatus" --output text)
-          echo "Stack status: $STACK_STATUS"
-          echo "::set-output name=status::$STACK_STATUS"
-        continue-on-error: true
+  
 
-      - name: Delete rollbacked stack
-        if: steps.check_rollback.outputs.status == 'ROLLBACK_COMPLETE' || steps.check_rollback.outputs.status == 'ROLLBACK_FAILED'
-        run: |
-          STACK_NAME=my-serverless-app
-          echo "Deleting stack in ROLLBACK status: $STACK_NAME"
-          aws cloudformation delete-stack --stack-name $STACK_NAME
+              
+ 
 
-      # Step 7: Run Integration Tests (Optional)
-      - name: Run Integration Tests
-        run: |
-          # Replace with your actual API endpoint
-          API_ENDPOINT=$(aws cloudformation describe-stacks --stack-name my-serverless-app --query "Stacks[0].Outputs[?OutputKey=='UsersApiURL'].OutputValue" --output text)
-          
-          # Test Create User
-          CREATE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST $API_ENDPOINT/users \
-            -H "Content-Type: application/json" \
-            -d '{"UserID": "U1001", "Name": "Alice", "Email": "alice@example.com", "Age": "25"}')
-          if [ "$CREATE_RESPONSE" -ne 201 ]; then
-            echo "Create User failed with status code $CREATE_RESPONSE"
-            exit 1
-          fi
-          
-          # Test Get User
-          GET_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X GET $API_ENDPOINT/users/U1001)
-          if [ "$GET_RESPONSE" -ne 200 ]; then
-            echo "Get User failed with status code $GET_RESPONSE"
-            exit 1
-          fi
-          
-          # Test Update User
-          UPDATE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X PUT $API_ENDPOINT/users/U1001 \
-            -H "Content-Type: application/json" \
-            -d '{"Email": "alice.new@example.com", "Age": "26"}')
-          if [ "$UPDATE_RESPONSE" -ne 200 ]; then
-            echo "Update User failed with status code $UPDATE_RESPONSE"
-            exit 1
-          fi
-          
-          # Test Delete User
-          DELETE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE $API_ENDPOINT/users/U1001)
-          if [ "$DELETE_RESPONSE" -ne 200 ]; then
-            echo "Delete User failed with status code $DELETE_RESPONSE"
-            exit 1
-          fi
 
-          # Add user again for demo purpose 
-          
-          CREATE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST $API_ENDPOINT/users \
-            -H "Content-Type: application/json" \
-            -d '{"UserID": "U1001", "Name": "Alice", "Email": "alice@example.com", "Age": "25"}')
-          if [ "$CREATE_RESPONSE" -ne 201 ]; then
-            echo "Create User failed with status code $CREATE_RESPONSE"
-            exit 1
-          fi
-          
-          echo "All integration tests passed successfully."
-
-      # Step 8: Notify on Success (Optional)
-      #- name: Notify Success on Slack
-      # if: success()
-      #  uses: 8398a7/action-slack@v3
-      #  with:
-      #    status: ${{ job.status }}
-      #    fields: repo,message,commit,author
-      #  env:
-      #    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      # Step 9: Notify on Failure (Optional)
-      #- name: Notify Failure on Slack
-      #  if: failure()
-      #  uses: 8398a7/action-slack@v3
-      #  with:
-      #    status: ${{ job.status }}
-      #    fields: repo,message,commit,author
-      #  env:
-      #    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+Outputs:
+  CloudFrontURL:
+    Description: "The URL of the CloudFront distribution"
+    Value: !GetAtt MyCloudFrontDistribution.DomainName
+  UsersApiURL:
+    Value: !Sub "https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
