@@ -44,8 +44,7 @@ jobs:
       - name: Deploy SAM Application
         run: |
           STACK_NAME=my-serverless-app
-          aws cloudformation describe-stacks --stack-name $STACK_NAME || STACK_EXISTS=$?
-          echo $STACK_EXISTS
+  
           
           if aws cloudformation describe-stacks --stack-name $STACK_NAME ; then
             echo "Stack does not exist. Creating new stack: $STACK_NAME"
