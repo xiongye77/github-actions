@@ -1,3 +1,11 @@
+<img width="1080" alt="image" src="https://github.com/user-attachments/assets/789ae184-fe2f-4e08-b053-5245ee26c587">
+
+On your Mac check your IP address and add it to IP ruleset to allow traffic to Cloudfront 
+
+<img width="1346" alt="image" src="https://github.com/user-attachments/assets/c785cf29-eb40-4220-be46-69c1faea1a49">
+<img width="1459" alt="image" src="https://github.com/user-attachments/assets/250d8454-ed95-4c4f-96b9-32e15cabede9">
+
+
 # github-actions
 
 ![image](https://github.com/xiongye77/github-actions/assets/36766101/eb89464c-d7de-4899-a1f9-331b524ff29c)
