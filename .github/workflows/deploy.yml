@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - github-action-api-gw-lambda-dynamodb
+    paths-ignore:
+      - 'README.md'
 permissions:
   id-token: write  # Required for OIDC authentication
   contents: read   # Provides access to repository contents
@@ -27,13 +29,22 @@ jobs:
       - name: Install AWS SAM CLI
         run: |
           pip install aws-sam-cli
-
+          
+      - name: Extract S3 Bucket Name and AWS Region
+        id: extract_s3_bucket_aws_region
+        run: |
+         s3_bucket=$(python -c 'import toml; config = toml.load("infrastructure/samconfig.toml"); print(config["default"]["global"]["parameters"]["s3_bucket"])')
+         echo "s3_bucket=${s3_bucket}" >> $GITHUB_OUTPUT
+         aws_region=$(python -c 'import toml; config = toml.load("infrastructure/samconfig.toml"); print(config["default"]["global"]["parameters"]["region"])')
+         echo "aws_region=${aws_region}" >> $GITHUB_OUTPUT
+         
+         cat $GITHUB_OUTPUT
       # Step 4: Configure AWS Credentials using OIDC
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::582140066777:role/github-action-role
-          aws-region: us-east-1
+          aws-region: ${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }}
 
 
       - name: Install dependencies
@@ -42,23 +53,18 @@ jobs:
           pip install toml
           
 
-      # 7. Extract S3 Bucket Name from samconfig.toml
-      - name: Extract S3 Bucket Name
-        id: extract_s3_bucket
-        run: |
-         s3_bucket=$(python -c 'import toml; config = toml.load("infrastructure/samconfig.toml"); print(config["default"]["global"]["parameters"]["s3_bucket"])')
-         echo "s3_bucket=${s3_bucket}" >> $GITHUB_OUTPUT
-         cat $GITHUB_OUTPUT
+      # Extract S3 bucket and AWS region information from samconfig.toml file 
+ 
 
-      # 8. Create S3 Bucket if it doesn't exist
+      #  Create S3 Bucket if it doesn't exist
       - name: Create S3 Bucket
         run: |
-          BUCKET_EXISTS=$(aws s3api head-bucket --bucket ${{ steps.extract_s3_bucket.outputs.s3_bucket }}  2>&1 || true)
+          BUCKET_EXISTS=$(aws s3api head-bucket --bucket ${{ steps.extract_s3_bucket_aws_region.outputs.s3_bucket }}  2>&1 || true)
           if [ -z "$BUCKET_EXISTS" ]; then
             echo "Bucket exists"
           else
             echo "Bucket does not exist and create bucket"
-            aws s3 mb s3://${{ steps.extract_s3_bucket.outputs.s3_bucket }} --region us-east-1
+            aws s3 mb s3://${{ steps.extract_s3_bucket_aws_region.outputs.s3_bucket }} --region ${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }}
           fi
           
       # Step 5: Build the SAM application
@@ -71,21 +77,7 @@ jobs:
         run: |
 
           sam deploy --config-file infrastructure/samconfig.toml
-      - name: Check for rollback status
-        id: check_rollback
-        run: |
-          STACK_NAME=my-serverless-app
-          STACK_STATUS=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query "Stacks[0].StackStatus" --output text)
-          echo "Stack status: $STACK_STATUS"
-          echo "::set-output name=status::$STACK_STATUS"
-        continue-on-error: true
 
-      - name: Delete rollbacked stack
-        if: steps.check_rollback.outputs.status == 'ROLLBACK_COMPLETE' || steps.check_rollback.outputs.status == 'ROLLBACK_FAILED'
-        run: |
-          STACK_NAME=my-serverless-app
-          echo "Deleting stack in ROLLBACK status: $STACK_NAME"
-          aws cloudformation delete-stack --stack-name $STACK_NAME
 
       # Step 7: Run Integration Tests (Optional)
       - name: Run Integration Tests
