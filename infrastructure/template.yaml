@@ -2,7 +2,11 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
   Serverless application with API Gateway and Lambda functions for CRUD operations on DynamoDB. Add Cloudfront for CDN and WAF protection. 
-
+Parameters:
+  DomainName:
+    Type: String
+    Description: "Custom domain name for CloudFront distribution"
+    Default: "apigw-cdn.yexiongcodetest.com"  # Replace with your custom domain name
 Resources:
 
   UsersTable:
@@ -220,10 +224,7 @@ Resources:
         DNSName: !GetAtt MyCloudFrontDistribution.DomainName
 
   # Parameter for the custom domain
-  DomainName:
-    Type: String
-    Description: "Custom domain name for CloudFront distribution"
-    Default: "apigw-cdn.yexiongcodetest.com"  # Replace with your custom domain name
+  
 
   SSLCertificate:
     Type: AWS::CertificateManager::Certificate
