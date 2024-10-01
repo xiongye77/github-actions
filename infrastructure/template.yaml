@@ -124,6 +124,8 @@ Resources:
       Rules:
         - Name: AWSManagedCommonRules
           Priority: 1
+          Action:
+            Count: {}  
           Statement:
             ManagedRuleGroupStatement:
               VendorName: AWS
@@ -134,6 +136,8 @@ Resources:
             MetricName: AWSManagedCommonRulesMetric
         - Name: AWSManagedSQLiRules
           Priority: 2
+          Action:
+            Count: {}  
           Statement:
             ManagedRuleGroupStatement:
               VendorName: AWS
