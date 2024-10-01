@@ -123,30 +123,20 @@ Resources:
         MetricName: MyWAF
         SampledRequestsEnabled: true
       Rules:
-      - Name: AWSManagedCommonRules
-        Priority: 1
-        Action:
-          Allow: {}  # Changed to Allow
-        Statement:
-          ManagedRuleGroupStatement:
-            VendorName: AWS
-            Name: AWSManagedRulesCommonRuleSet
-        VisibilityConfig:
-          SampledRequestsEnabled: true
-          CloudWatchMetricsEnabled: true
-          MetricName: AWSManagedCommonRulesMetric
-      - Name: AWSManagedSQLiRules
-        Priority: 2
-        Action:
-          Allow: {}  # Changed to Allow
-        Statement:
-          ManagedRuleGroupStatement:
-            VendorName: AWS
-            Name: AWSManagedRulesSQLiRuleSet
-        VisibilityConfig:
-          SampledRequestsEnabled: true
-          CloudWatchMetricsEnabled: true
-          MetricName: AWSManagedSQLiRulesMetric
+        - Name: BlockBadRequests
+          Priority: 1
+          Action:
+            Block: {}
+          VisibilityConfig:
+            CloudWatchMetricsEnabled: true
+            MetricName: BlockBadRequests
+            SampledRequestsEnabled: true
+          Statement:
+            RateBasedStatement:
+              Limit: 2000
+              AggregateKeyType: IP
+
+
   MyCloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
