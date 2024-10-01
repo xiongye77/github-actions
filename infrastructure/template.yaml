@@ -202,7 +202,8 @@ Resources:
       IPAddressVersion: IPV4
       Addresses:
         - "192.0.2.0/24"
-
+        - "180.150.37.246/32"
+        
   # Deny requests from given IPs to associated Resources
   DenyIPSet:
     Type: AWS::WAFv2::IPSet
