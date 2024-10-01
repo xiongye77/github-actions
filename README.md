@@ -6,6 +6,9 @@ On your Mac check your IP address and add it to IP ruleset to allow traffic to C
 <img width="1459" alt="image" src="https://github.com/user-attachments/assets/250d8454-ed95-4c4f-96b9-32e15cabede9">
 
 
+<img width="1084" alt="image" src="https://github.com/user-attachments/assets/c4c81a6b-b00f-4257-9da8-352303f9f13a">
+
+
 # github-actions
 
 ![image](https://github.com/xiongye77/github-actions/assets/36766101/eb89464c-d7de-4899-a1f9-331b524ff29c)
