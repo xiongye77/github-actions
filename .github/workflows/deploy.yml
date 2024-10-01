@@ -62,7 +62,7 @@ jobs:
       #  Create S3 Bucket if it doesn't exist
       - name: Create S3 Bucket
         run: |
-          BUCKET_NAME = ${{ steps.extract_s3_bucket_aws_region.outputs.s3_bucket }}
+          BUCKET_NAME = "${{ steps.extract_s3_bucket_aws_region.outputs.s3_bucket }}"
           aws s3api head-bucket --bucket $BUCKET_NAME 2>/dev/null
           EXIT_CODE=$?
 
