@@ -11,3 +11,4 @@ confirm_changeset = false
 capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"
 parameter_overrides = "Env=prod"
 no_fail_on_empty_changeset = true
+disable_rollback = true
