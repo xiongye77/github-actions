@@ -44,7 +44,7 @@ jobs:
       - name: Deploy SAM Application
         run: |
 
-          sam deploy --config-file samconfig.toml
+          sam deploy --config-file infrastructure/samconfig.toml
       - name: Check for rollback status
         id: check_rollback
         run: |
