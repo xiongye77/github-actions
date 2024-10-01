@@ -209,7 +209,42 @@ Resources:
       Addresses:
         - "203.0.113.0/24"
 
+  MyDNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: "yexiongcodetest.com"  # Replace with your hosted zone name
+      Name: !Ref DomainName
+      Type: A
+      AliasTarget:
+        HostedZoneId: Z2FDTNDATAQYW2  # CloudFront hosted zone ID (always the same)
+        DNSName: !GetAtt MyCloudFrontDistribution.DomainName
 
+  # Parameter for the custom domain
+  DomainName:
+    Type: String
+    Description: "Custom domain name for CloudFront distribution"
+    Default: "apigw-cdn.yexiongcodetest.com"  # Replace with your custom domain name
+
+  SSLCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      ValidationMethod: DNS
+    Region: us-east-1
+
+  # DNS Validation Record for ACM Certificate
+  CertificateValidationRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: "Z0534949GP155SIBV2FE"
+      Name: !Select [0, !GetAtt SSLCertificate.DomainValidationOptions[*].ResourceRecord.Name]
+      Type: !Select [0, !GetAtt SSLCertificate.DomainValidationOptions[*].ResourceRecord.Type]
+      TTL: '300'
+      ResourceRecords:
+        - !Select [0, !GetAtt SSLCertificate.DomainValidationOptions[*].ResourceRecord.Value]
+    DependsOn: SSLCertificate
+
+    
   MyCloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -233,7 +268,11 @@ Resources:
           OriginRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
         DefaultRootObject: ""
         ViewerCertificate:
-          CloudFrontDefaultCertificate: true
+          AcmCertificateArn: !Ref SSLCertificate
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2019
+        Aliases:
+          - !Ref DomainName
         HttpVersion: http2
         PriceClass: PriceClass_100
         WebACLId: !GetAtt MyWebACL.Arn
