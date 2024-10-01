@@ -269,15 +269,12 @@ Resources:
         HttpVersion: http2
         PriceClass: PriceClass_100
         WebACLId: !GetAtt MyWebACL.Arn
-  
-
-  
-
-              
- 
-
+                 
 
 Outputs:
+  APIGWCDNURL:
+    Description: "The URL of the CloudFront distribution After ADD DNS Alias"
+    Value: !Sub "https://${DomainName}/Prod/users/U1001"
   CloudFrontURL:
     Description: "The URL of the CloudFront distribution"
     Value: !GetAtt MyCloudFrontDistribution.DomainName
