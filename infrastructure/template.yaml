@@ -122,21 +122,8 @@ Resources:
         MetricName: MyWAF
         SampledRequestsEnabled: true
       Rules:
-        - Name: RuleWithAWSManagedRules
-          Priority: 0
-          OverrideAction:
-            Count: {}
-          VisibilityConfig:
-            SampledRequestsEnabled: true
-            CloudWatchMetricsEnabled: true
-            MetricName: RuleWithAWSManagedRulesMetric
-          Statement:
-            ManagedRuleGroupStatement:
-              VendorName: AWS
-              Name: AWSManagedRulesCommonRuleSet
-              ExcludedRules: []
         - Name: BlockBadRequests
-          Priority: 1
+          Priority: 0
           OverrideAction:
             Count: {}
           VisibilityConfig:
