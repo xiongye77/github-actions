@@ -223,27 +223,19 @@ Resources:
         HostedZoneId: Z2FDTNDATAQYW2  # CloudFront hosted zone ID (always the same)
         DNSName: !GetAtt MyCloudFrontDistribution.DomainName
 
-  # Parameter for the custom domain
-  
 
+
+  # DNS Validation Record for ACM Certificate
   SSLCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
-      DomainName: !Ref DomainName
+      DomainName: !Ref DomainName  # Replace with your domain name parameter or value
       ValidationMethod: DNS
-  
+      DomainValidationOptions:
+        - DomainName: !Ref DomainName
+          HostedZoneId: "Z0534949GP155SIBV2FE"  # Replace with your actual Hosted Zone ID
 
-  # DNS Validation Record for ACM Certificate
-  CertificateValidationRecord:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId: "Z0534949GP155SIBV2FE"  # Replace with your actual Hosted Zone ID
-      Name: !GetAtt SSLCertificate.DomainValidationOptions.0.ResourceRecord.Name
-      Type: !GetAtt SSLCertificate.DomainValidationOptions.0.ResourceRecord.Type
-      TTL: '300'
-      ResourceRecords:
-        - !GetAtt SSLCertificate.DomainValidationOptions.0.ResourceRecord.Value
-    DependsOn: SSLCertificate
+
 
     
   MyCloudFrontDistribution:
