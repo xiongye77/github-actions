@@ -54,7 +54,7 @@ jobs:
         run: |
           aws s3api head-bucket --bucket ${{ steps.extract_s3_bucket.outputs.s3_bucket }} 2>/dev/null
           if [ $? -ne 0 ]; then
-            aws s3 mb s3://${{ steps.extract_s3_bucket.outputs.s3_bucket }} 
+            aws s3 mb s3://${{ steps.extract_s3_bucket.outputs.s3_bucket }} --region us-east-1
           else
             echo "S3 bucket '${{ steps.extract_s3_bucket.outputs.s3_bucket }}' already exists."
           fi
