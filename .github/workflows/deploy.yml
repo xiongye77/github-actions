@@ -29,6 +29,12 @@ jobs:
       - name: Install AWS SAM CLI
         run: |
           pip install aws-sam-cli
+      
+      - name: Install dependencies
+        run: |
+          # Example for Python Lambda functions
+          pip install toml
+
           
       - name: Extract S3 Bucket Name and AWS Region
         id: extract_s3_bucket_aws_region
@@ -47,10 +53,7 @@ jobs:
           aws-region: ${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }}
 
 
-      - name: Install dependencies
-        run: |
-          # Example for Python Lambda functions
-          pip install toml
+ 
           
 
       # Extract S3 bucket and AWS region information from samconfig.toml file 
