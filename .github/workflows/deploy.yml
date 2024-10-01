@@ -62,13 +62,17 @@ jobs:
       #  Create S3 Bucket if it doesn't exist
       - name: Create S3 Bucket
         run: |
-          BUCKET_EXISTS=$(aws s3api head-bucket --bucket ${{ steps.extract_s3_bucket_aws_region.outputs.s3_bucket }}  2>&1 || true)
-          if [ -z "$BUCKET_EXISTS" ]; then
-            echo "Bucket exists"
+          BUCKET_NAME = ${{ steps.extract_s3_bucket_aws_region.outputs.s3_bucket }}
+          aws s3api head-bucket --bucket $BUCKET_NAME 2>/dev/null
+          EXIT_CODE=$?
+
+          if [ $EXIT_CODE -eq 0 ]; then
+              echo "Bucket '$BUCKET_NAME' exists and you have access."
           else
-            echo "Bucket does not exist and create bucket"
-            aws s3 mb s3://${{ steps.extract_s3_bucket_aws_region.outputs.s3_bucket }} --region ${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }}
+              echo "Bucket '$BUCKET_NAME' does not exist or you do not have access."
+              aws s3 mb s3://${{ steps.extract_s3_bucket_aws_region.outputs.s3_bucket }} --region ${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }}
           fi
+          
           
       # Step 5: Build the SAM application
       - name: Build SAM Application
