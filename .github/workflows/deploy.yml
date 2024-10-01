@@ -46,7 +46,7 @@ jobs:
       - name: Extract S3 Bucket Name
         id: extract_s3_bucket
         run: |
-         s3_bucket=$(python -c 'import toml; config = toml.load("samconfig.toml"); print(config["default"]["global"]["parameters"]["s3_bucket"])')
+         s3_bucket=$(python -c 'import toml; config = toml.load("infrastructure/samconfig.toml"); print(config["default"]["global"]["parameters"]["s3_bucket"])')
          echo "s3_bucket=${s3_bucket}" >> $GITHUB_OUTPUT
 
       # 8. Create S3 Bucket if it doesn't exist
