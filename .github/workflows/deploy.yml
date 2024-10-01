@@ -48,10 +48,23 @@ jobs:
         run: |
           python -c "
 import toml
-config = toml.load('infrastructure/samconfig.toml')
-s3_bucket = config['default']['global']['parameters']['s3_bucket']
-print(f's3_bucket={s3_bucket}')
-" >> $GITHUB_OUTPUT
+
+def get_parameters(file_path):
+    config = toml.load(file_path)
+    params = config['default']['global']['parameters']
+    stack_name = params.get('stack_name')
+    s3_bucket = params.get('s3_bucket')
+    region = params.get('region')
+    parameter_overrides = params.get('parameter_overrides')
+    
+    with open('$GITHUB_OUTPUT', 'a') as fh:
+        fh.write(f'stack_name={stack_name}\n')
+        fh.write(f's3_bucket={s3_bucket}\n')
+        fh.write(f'region={region}\n')
+        fh.write(f'parameter_overrides={parameter_overrides}\n')
+
+get_parameters('samconfig.toml')
+          "
 
       # 8. Create S3 Bucket if it doesn't exist
       - name: Create S3 Bucket
