@@ -112,10 +112,9 @@ Resources:
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
         AllowOrigin: "'*'"
 
-  WebAcl:
+  MyWebACL:
     Type: AWS::WAFv2::WebACL
     Properties:
-      Name: MyWebAcl
       Scope: CLOUDFRONT # This must be set to value CLOUDFRONT when associating it for CloudFront
       DefaultAction:
         Block: {}
