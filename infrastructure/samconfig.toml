@@ -1,0 +1,12 @@
+version = 0.1
+
+[prod.deploy]
+[prod.deploy.parameters]
+stack_name = "my-serverless-app"
+s3_bucket = "aws-sam-cli-managed-default-582140066777"
+s3_prefix = "sam/prod"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"
+parameter_overrides = "Env=prod"
+no_fail_on_empty_changeset = true

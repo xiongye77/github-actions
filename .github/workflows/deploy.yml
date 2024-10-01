@@ -43,28 +43,8 @@ jobs:
       # Step 6: Deploy the SAM application
       - name: Deploy SAM Application
         run: |
-          STACK_NAME=my-serverless-app
-  
-          
-          if aws cloudformation describe-stacks --stack-name $STACK_NAME ; then
-            echo "Stack does not exist. Creating new stack: $STACK_NAME"
-            sam deploy \
-              --stack-name $STACK_NAME \
-              --resolve-s3 \
-              --template-file .aws-sam/build/template.yaml \
-              --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
-              --no-confirm-changeset \
-              --no-fail-on-empty-changeset
-          else
-            echo "Stack exists. Updating stack: $STACK_NAME"
-            sam deploy \
-              --stack-name $STACK_NAME \
-              --resolve-s3 \
-              --template-file .aws-sam/build/template.yaml \
-              --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
-              --no-confirm-changeset \
-              --no-fail-on-empty-changeset
-          fi 
+
+          sam deploy --config-env prod
       - name: Check for rollback status
         id: check_rollback
         run: |
