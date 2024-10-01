@@ -147,18 +147,19 @@ Resources:
             CloudWatchMetricsEnabled: true
             MetricName: DenyCertainIPsMetric
             
-        - Name: AWSManagedRulesCommonRuleSet
+        - Name: RuleWithAWSManagedRules
           Priority: 2
-          Action:
-            Block: {}  # You can choose Allow, Block, or Count
+          OverrideAction:
+            Count: {}
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: RuleWithAWSManagedRulesMetric
           Statement:
             ManagedRuleGroupStatement:
               VendorName: AWS
               Name: AWSManagedRulesCommonRuleSet
-          VisibilityConfig:
-            SampledRequestsEnabled: true
-            CloudWatchMetricsEnabled: true
-            MetricName: AWSManagedRulesCommonRuleSetMetric
+              ExcludedRules: []
 
    # Allow requests from given IPs to associated Resources
   IPSet:
