@@ -184,8 +184,11 @@ Resources:
             SampledRequestsEnabled: true
           Statement:
             RateBasedStatement:
-              Limit: 2000
-              AggregateKeyType: IP
+              Limit: 1000
+              AggregateKeyType: FORWARDED_IP
+              ForwardedIPConfig:
+                HeaderName: X-Forwarded-For
+                FallbackBehavior: MATCH
           
 
    # Allow requests from given IPs to associated Resources
