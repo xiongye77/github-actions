@@ -8,6 +8,7 @@ On your Mac check your IP address and add it to IP ruleset to allow traffic to C
 
 <img width="1084" alt="image" src="https://github.com/user-attachments/assets/c4c81a6b-b00f-4257-9da8-352303f9f13a">
 
+<img width="1133" alt="image" src="https://github.com/user-attachments/assets/e530158e-e046-4513-bdae-38a77905ab6d">
 
 # github-actions
 
