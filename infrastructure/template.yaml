@@ -177,7 +177,7 @@ Resources:
         - Name: BlockBadRequests
           Priority: 4
           OverrideAction:
-            Block: {}
+            Count: {}
           VisibilityConfig:
             CloudWatchMetricsEnabled: true
             MetricName: BlockBadRequests
