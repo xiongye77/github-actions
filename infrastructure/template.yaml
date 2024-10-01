@@ -236,12 +236,12 @@ Resources:
   CertificateValidationRecord:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: "Z0534949GP155SIBV2FE"
-      Name: !Select [0, !GetAtt SSLCertificate.DomainValidationOptions[*].ResourceRecord.Name]
-      Type: !Select [0, !GetAtt SSLCertificate.DomainValidationOptions[*].ResourceRecord.Type]
+      HostedZoneId: "Z0534949GP155SIBV2FE"  # Replace with your actual Hosted Zone ID
+      Name: !GetAtt SSLCertificate.DomainValidationOptions.0.ResourceRecord.Name
+      Type: !GetAtt SSLCertificate.DomainValidationOptions.0.ResourceRecord.Type
       TTL: '300'
       ResourceRecords:
-        - !Select [0, !GetAtt SSLCertificate.DomainValidationOptions[*].ResourceRecord.Value]
+        - !GetAtt SSLCertificate.DomainValidationOptions.0.ResourceRecord.Value
     DependsOn: SSLCertificate
 
     
