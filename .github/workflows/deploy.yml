@@ -48,6 +48,7 @@ jobs:
         run: |
          s3_bucket=$(python -c 'import toml; config = toml.load("infrastructure/samconfig.toml"); print(config["default"]["global"]["parameters"]["s3_bucket"])')
          echo "s3_bucket=${s3_bucket}" >> $GITHUB_OUTPUT
+         cat $GITHUB_OUTPUT
 
       # 8. Create S3 Bucket if it doesn't exist
       - name: Create S3 Bucket
