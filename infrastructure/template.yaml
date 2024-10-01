@@ -121,7 +121,7 @@ Resources:
       VisibilityConfig:
             SampledRequestsEnabled: true
             CloudWatchMetricsEnabled: true
-            MetricName: DefaultAllowMetric
+            MetricName: DefaultWAFMetric
       Rules:
         - Name: AllowCertainIPs
           Priority: 0
@@ -176,8 +176,6 @@ Resources:
 
         - Name: BlockBadRequests
           Priority: 4
-          OverrideAction:
-            Count: {}
           VisibilityConfig:
             CloudWatchMetricsEnabled: true
             MetricName: BlockBadRequests
@@ -185,10 +183,8 @@ Resources:
           Statement:
             RateBasedStatement:
               Limit: 1000
-              AggregateKeyType: FORWARDED_IP
-              ForwardedIPConfig:
-                HeaderName: X-Forwarded-For
-                FallbackBehavior: MATCH
+              AggregateKeyType: IP
+
           
 
    # Allow requests from given IPs to associated Resources
