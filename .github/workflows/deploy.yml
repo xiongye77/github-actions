@@ -46,32 +46,15 @@ jobs:
       - name: Extract S3 Bucket Name
         id: extract_s3_bucket
         run: |
-          python -c "
-import toml
-
-def get_parameters(file_path):
-    config = toml.load(file_path)
-    params = config['default']['global']['parameters']
-    stack_name = params.get('stack_name')
-    s3_bucket = params.get('s3_bucket')
-    region = params.get('region')
-    parameter_overrides = params.get('parameter_overrides')
-    
-    with open('$GITHUB_OUTPUT', 'a') as fh:
-        fh.write(f'stack_name={stack_name}\n')
-        fh.write(f's3_bucket={s3_bucket}\n')
-        fh.write(f'region={region}\n')
-        fh.write(f'parameter_overrides={parameter_overrides}\n')
-
-get_parameters('samconfig.toml')
-          "
+         s3_bucket=$(python -c 'import toml; config = toml.load("samconfig.toml"); print(config["default"]["global"]["parameters"]["s3_bucket"])')
+         echo "s3_bucket=${s3_bucket}" >> $GITHUB_OUTPUT
 
       # 8. Create S3 Bucket if it doesn't exist
       - name: Create S3 Bucket
         run: |
           aws s3api head-bucket --bucket ${{ steps.extract_s3_bucket.outputs.s3_bucket }} 2>/dev/null
           if [ $? -ne 0 ]; then
-            aws s3 mb s3://${{ steps.extract_s3_bucket.outputs.s3_bucket }} --region ${{ secrets.AWS_REGION }}
+            aws s3 mb s3://${{ steps.extract_s3_bucket.outputs.s3_bucket }} 
           else
             echo "S3 bucket '${{ steps.extract_s3_bucket.outputs.s3_bucket }}' already exists."
           fi
