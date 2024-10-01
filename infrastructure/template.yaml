@@ -112,29 +112,61 @@ Resources:
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
         AllowOrigin: "'*'"
 
-  MyWebACL:
+  WebAcl:
     Type: AWS::WAFv2::WebACL
     Properties:
+      Name: MyWebAcl
+      Scope: CLOUDFRONT # This must be set to value CLOUDFRONT when associating it for CloudFront
       DefaultAction:
-        Allow: {}
-      Scope: CLOUDFRONT
+        Block: {}
       VisibilityConfig:
-        CloudWatchMetricsEnabled: true
-        MetricName: MyWAF
-        SampledRequestsEnabled: true
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: DefaultAllowMetric
       Rules:
-        - Name: BlockBadRequests
+        - Name: AllowCertainIPs
+          Priority: 0
+          Action:
+            Allow: {}
+          Statement:
+            IPSetReferenceStatement:
+              Arn: !GetAtt IPSet.Arn
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: AllowCertainIPsMetric
+
+        - Name: DenyCertainIPs
           Priority: 1
           Action:
             Block: {}
-          VisibilityConfig:
-            CloudWatchMetricsEnabled: true
-            MetricName: BlockBadRequests
-            SampledRequestsEnabled: true
           Statement:
-            RateBasedStatement:
-              Limit: 2000
-              AggregateKeyType: IP
+            IPSetReferenceStatement:
+              Arn: !GetAtt DenyIPSet.Arn
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: DenyCertainIPsMetric
+
+   # Allow requests from given IPs to associated Resources
+  IPSet:
+    Type: AWS::WAFv2::IPSet
+    Properties:
+      Name: AllowIPSet
+      Scope: REGIONAL
+      IPAddressVersion: IPV4
+      Addresses:
+        - "192.0.2.0/24"
+
+  # Deny requests from given IPs to associated Resources
+  DenyIPSet:
+    Type: AWS::WAFv2::IPSet
+    Properties:
+      Name: DenyIPSet
+      Scope: REGIONAL
+      IPAddressVersion: IPV4
+      Addresses:
+        - "203.0.113.0/24"
 
 
   MyCloudFrontDistribution:
