@@ -15,7 +15,8 @@ On your Mac check your IP address and add it to IP ruleset to allow traffic to C
 
 <img width="1347" alt="image" src="https://github.com/user-attachments/assets/58a3f736-f659-4ac4-a13e-5ab02916e7ea">
 
-<img width="1649" alt="image" src="https://github.com/user-attachments/assets/8e3c8c59-b6ed-40e8-9b77-8e0aa72d1c9c">
+<img width="1684" alt="image" src="https://github.com/user-attachments/assets/8c9f6538-45ad-4311-8ead-939da86186c5">
+
 
 <img width="1696" alt="image" src="https://github.com/user-attachments/assets/0f9ad865-6e12-4cc8-8016-545aa9a1d117">
 
