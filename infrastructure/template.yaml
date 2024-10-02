@@ -124,11 +124,11 @@ Resources:
 
   # API Gateway Deployment
   Deployment:
-    Type: 'AWS::ApiGateway::Deployment'
+    Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId: !Ref ApiGateway
       Description: My ApiGateway deployment
-      StageName: DummyStage
+      StageName: !Ref MyApiStage
 
 
 
@@ -137,6 +137,7 @@ Resources:
     Type: AWS::ApiGateway::Stage
     Properties:
       RestApiId: !Ref ApiGateway
+      DeploymentId: !Ref Deployment
       MethodSettings:
         - DataTraceEnabled: true
           LoggingLevel: INFO
