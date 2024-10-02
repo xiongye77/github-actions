@@ -133,7 +133,6 @@ Resources:
   MyApiStage:
     Type: AWS::ApiGateway::Stage
     Properties:
-      DeploymentId: !Ref MyApiDeployment
       RestApiId: !Ref ApiGateway
       MethodSettings:
         - DataTraceEnabled: true
