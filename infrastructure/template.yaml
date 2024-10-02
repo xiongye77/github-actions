@@ -122,21 +122,29 @@ Resources:
             Method: delete
             RestApiId: !Ref ApiGateway
 
-  # API Gateway Deployment
-  MyAPIGWDeployment:
-    Type: AWS::ApiGateway::Deployment
-    Properties:
-      RestApiId: !Ref ApiGateway
-      Description: My ApiGateway deployment
+
       
 
 
-  # API Gateway Stage with Caching and Logging
-  MyApiStage:
-    Type: AWS::ApiGateway::Stage
+
+
+      
+  ApiGatewayAccount:
+    Type: AWS::ApiGateway::Account
     Properties:
-      RestApiId: !Ref ApiGateway
-      DeploymentId: !Ref Deployment
+      CloudWatchRoleArn: !GetAtt ApiGatewayCloudWatchLogsRole.Arn
+    
+
+  ApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: UsersApi
+      StageName: Prod
+      EndpointConfiguration: REGIONAL
+      Cors:
+        AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        AllowOrigin: "'*'"
       MethodSettings:
         - DataTraceEnabled: true
           LoggingLevel: INFO
@@ -151,25 +159,6 @@ Resources:
         DestinationArn: !GetAtt ApiGatewayLogGroup.Arn
         Format: '{"requestId":"$context.requestId","ip":"$context.identity.sourceIp","caller":"$context.identity.caller","user":"$context.identity.user","requestTime":"$context.requestTime","httpMethod":"$context.httpMethod","resourcePath":"$context.resourcePath","status":"$context.status","protocol":"$context.protocol","responseLength":"$context.responseLength"}'
       TracingEnabled: true
-    DependsOn:
-      - MyAPIGWDeployment
-      
-  ApiGatewayAccount:
-    Type: AWS::ApiGateway::Account
-    Properties:
-      CloudWatchRoleArn: !GetAtt ApiGatewayCloudWatchLogsRole.Arn
-    
-
-  ApiGateway:
-    Type: AWS::Serverless::Api
-    Properties:
-      Name: UsersApi
-      StageName: !Ref MyApiStage
-      EndpointConfiguration: REGIONAL
-      Cors:
-        AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
-        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-        AllowOrigin: "'*'"
         
       
           
