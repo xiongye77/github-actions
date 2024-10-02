@@ -149,7 +149,12 @@ Resources:
         Limit: 10000
         Period: MONTH
 
-
+  MyUsagePlanKey:
+    Type: AWS::ApiGateway::UsagePlanKey
+    Properties:
+      KeyId: !Ref MyApiKey
+      KeyType: API_KEY
+      UsagePlanId: !Ref MyUsagePlan
       
   ApiGatewayAccount:
     Type: AWS::ApiGateway::Account
