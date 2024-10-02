@@ -123,13 +123,12 @@ Resources:
             RestApiId: !Ref ApiGateway
 
   # API Gateway Deployment
-  Deployment:
+  MyAPIGWDeployment:
     Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId: !Ref ApiGateway
       Description: My ApiGateway deployment
-      StageName: !Ref MyApiStage
-
+      
 
 
   # API Gateway Stage with Caching and Logging
@@ -152,7 +151,9 @@ Resources:
         DestinationArn: !GetAtt ApiGatewayLogGroup.Arn
         Format: '{"requestId":"$context.requestId","ip":"$context.identity.sourceIp","caller":"$context.identity.caller","user":"$context.identity.user","requestTime":"$context.requestTime","httpMethod":"$context.httpMethod","resourcePath":"$context.resourcePath","status":"$context.status","protocol":"$context.protocol","responseLength":"$context.responseLength"}'
       TracingEnabled: true
-  
+    DependsOn:
+      - MyAPIGWDeployment
+      
   ApiGatewayAccount:
     Type: AWS::ApiGateway::Account
     Properties:
