@@ -123,6 +123,12 @@ Resources:
             RestApiId: !Ref ApiGateway
 
   # API Gateway Deployment
+  Deployment:
+    Type: 'AWS::ApiGateway::Deployment'
+    Properties:
+      RestApiId: !Ref ApiGateway
+      Description: My ApiGateway deployment
+      StageName: DummyStage
 
 
 
