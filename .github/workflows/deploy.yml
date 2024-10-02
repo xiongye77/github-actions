@@ -73,6 +73,9 @@ jobs:
               aws s3 mb s3://${{ steps.extract_s3_bucket_aws_region.outputs.s3_bucket }} --region ${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }}
           fi
           
+      - name : Validate the SAM application
+        run: |
+          sam validate --template-file infrastructure/template.yaml
           
       # Step 5: Build the SAM application
       - name: Build SAM Application
