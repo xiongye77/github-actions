@@ -79,7 +79,9 @@ Resources:
             Path: /users/{UserID}
             Method: get
             RestApiId: !Ref ApiGateway
-            ApiKeyRequired: true
+            Auth:
+              ApiKeyRequired: true
+            
 
   UpdateUserFunction:
     Type: AWS::Serverless::Function
