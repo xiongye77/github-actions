@@ -122,6 +122,38 @@ Resources:
             Method: delete
             RestApiId: !Ref ApiGateway
 
+  # API Gateway Deployment
+  MyApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId: !Ref ApiGateway
+    DependsOn:
+      - MyApiStage
+
+  # API Gateway Stage with Caching and Logging
+  MyApiStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      StageName: prod
+      DeploymentId: !Ref MyApiDeployment
+      RestApiId: !Ref ApiGateway
+      MethodSettings:
+        - DataTraceEnabled: true
+          LoggingLevel: INFO
+          MetricsEnabled: true
+          CachingEnabled: true
+          CacheTtlInSeconds: 300
+          ResourcePath: "/*"
+          HttpMethod: "*"
+      CacheClusterEnabled: true
+      CacheClusterSize: "0.5"
+      AccessLogSetting:
+        DestinationArn: !GetAtt ApiGatewayLogGroup.Arn
+        Format: '{"requestId":"$context.requestId","ip":"$context.identity.sourceIp","caller":"$context.identity.caller","user":"$context.identity.user","requestTime":"$context.requestTime","httpMethod":"$context.httpMethod","resourcePath":"$context.resourcePath","status":"$context.status","protocol":"$context.protocol","responseLength":"$context.responseLength"}'
+      TracingEnabled: true
+      CloudWatchRoleArn: !GetAtt ApiGatewayCloudWatchLogsRole.Arn
+      
+
   ApiGateway:
     Type: AWS::Serverless::Api
     Properties:
@@ -132,21 +164,9 @@ Resources:
         AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
         AllowOrigin: "'*'"
-      StageDescription:
-        Description: "Prod stage"
-        CacheClusterEnabled: true
-        CacheClusterSize: "0.5"  # Smallest cache size
-        MethodSettings:
-          - CachingEnabled: true
-            CacheTtlInSeconds: 300  # Adjust TTL as needed
-            DataTraceEnabled: true
-            HttpMethod: "*"
-            LoggingLevel: INFO
-            MetricsEnabled: true
-            ResourcePath: "/*"
-        AccessLogSetting:
-          DestinationArn: !GetAtt ApiGatewayLogGroup.Arn
-          Format: '{"requestId":"$context.requestId","ip":"$context.identity.sourceIp","caller":"$context.identity.caller","user":"$context.identity.user","requestTime":"$context.requestTime","httpMethod":"$context.httpMethod","resourcePath":"$context.resourcePath","status":"$context.status","protocol":"$context.protocol","responseLength":"$context.responseLength"}'
+      
+          
+  
   MyWebACL:
     Type: AWS::WAFv2::WebACL
     Properties:
