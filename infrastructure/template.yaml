@@ -182,6 +182,22 @@ Resources:
           HttpMethod: "*"
       CacheClusterEnabled: true
       CacheClusterSize: "0.5"
+      DefinitionBody:
+        openapi: 3.0.1
+        info:
+          title: My API
+          version: 1.0
+        paths:
+          /users/{userId}:
+            get:
+              parameters:
+                - name: userId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                  x-amazon-apigateway-caching:
+                    cacheKey: true  # Include userId in cache key
       AccessLogSetting:
         DestinationArn: !GetAtt ApiGatewayLogGroup.Arn
         Format: '{"requestId":"$context.requestId","ip":"$context.identity.sourceIp","caller":"$context.identity.caller","user":"$context.identity.user","requestTime":"$context.requestTime","httpMethod":"$context.httpMethod","resourcePath":"$context.resourcePath","status":"$context.status","protocol":"$context.protocol","responseLength":"$context.responseLength"}'
