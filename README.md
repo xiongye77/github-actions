@@ -17,10 +17,11 @@ On your Mac check your IP address and add it to IP ruleset to allow traffic to C
 
 <img width="1684" alt="image" src="https://github.com/user-attachments/assets/8c9f6538-45ad-4311-8ead-939da86186c5">
 
+<img width="1699" alt="image" src="https://github.com/user-attachments/assets/50efb837-9c83-4712-824d-1bcdcb0d6fe7">
 
 <img width="1696" alt="image" src="https://github.com/user-attachments/assets/0f9ad865-6e12-4cc8-8016-545aa9a1d117">
 
-<img width="1699" alt="image" src="https://github.com/user-attachments/assets/50efb837-9c83-4712-824d-1bcdcb0d6fe7">
+
 
 
 
