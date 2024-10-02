@@ -161,7 +161,6 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       Name: UsersApi
-      StageName: Prod
       EndpointConfiguration: REGIONAL
       Cors:
         AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
