@@ -79,6 +79,7 @@ Resources:
             Path: /users/{UserID}
             Method: get
             RestApiId: !Ref ApiGateway
+            ApiKeyRequired: true
 
   UpdateUserFunction:
     Type: AWS::Serverless::Function
@@ -125,7 +126,26 @@ Resources:
 
       
 
+  MyApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    Properties:
+      Enabled: true
+      Name: MyApiKey
 
+  MyUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    Properties:
+      UsagePlanName: MyUsagePlan
+      Description: "Usage plan for MyApi"
+      ApiStages:
+        - ApiId: !Ref ApiGateway
+          Stage: Prod
+      Throttle:
+        BurstLimit: 500
+        RateLimit: 100
+      Quota:
+        Limit: 10000
+        Period: MONTH
 
 
       
