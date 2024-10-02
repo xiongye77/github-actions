@@ -123,10 +123,7 @@ Resources:
             RestApiId: !Ref ApiGateway
 
   # API Gateway Deployment
-  MyApiDeployment:
-    Type: AWS::ApiGateway::Deployment
-    Properties:
-      RestApiId: !Ref ApiGateway
+
 
 
   # API Gateway Stage with Caching and Logging
