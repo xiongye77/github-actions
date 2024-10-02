@@ -133,7 +133,7 @@ Resources:
   MyApiStage:
     Type: AWS::ApiGateway::Stage
     Properties:
-      StageName: prod
+      StageName: Prod
       DeploymentId: !Ref MyApiDeployment
       RestApiId: !Ref ApiGateway
       MethodSettings:
@@ -161,7 +161,6 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       Name: UsersApi
-      StageName: Prod
       EndpointConfiguration: REGIONAL
       Cors:
         AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
