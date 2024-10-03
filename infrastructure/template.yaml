@@ -182,7 +182,7 @@ Resources:
           MetricsEnabled: true
           CachingEnabled: true
           CacheTtlInSeconds: 600
-        - ResourcePath: '/users/{userId}'   # Specify the path for method-level settings
+        - ResourcePath: '/users/{UserID}'   # Specify the path for method-level settings
           HttpMethod: GET
           CachingEnabled: true
           CacheTtlInSeconds: 600
