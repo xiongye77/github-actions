@@ -182,7 +182,10 @@ Resources:
           CacheTtlInSeconds: 600
           ResourcePath: "/*"
           HttpMethod: "*"
-          
+        - HttpMethod: "GET"
+          ResourcePath: "/UserID"
+          CacheTtlInSeconds: 60
+          CachingEnabled: True
       CacheClusterEnabled: true
       CacheClusterSize: "0.5"
       AccessLogSetting:
