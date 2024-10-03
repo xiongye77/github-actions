@@ -175,18 +175,18 @@ Resources:
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
         AllowOrigin: "'*'"
       MethodSettings:
-        - DataTraceEnabled: true
+        - ResourcePath: "/*"
+          HttpMethod: "*"
+          DataTraceEnabled: true
           LoggingLevel: INFO
           MetricsEnabled: true
           CachingEnabled: true
           CacheTtlInSeconds: 600
-          ResourcePath: "/*"
-          HttpMethod: "*"
-        - ResourcePath: '/users/{userId}'  # Enable method-specific caching
+        - ResourcePath: '/users/{userId}'   # Specify the path for method-level settings
           HttpMethod: GET
           CachingEnabled: true
-          CacheTtlInSeconds: 600  # Set TTL as per your requirement (1 hour here)
-          CacheDataEncrypted: true  # Optional: encrypt cached data
+          CacheTtlInSeconds: 600
+          CacheDataEncrypted: true
       CacheClusterEnabled: true
       CacheClusterSize: "0.5"
       AccessLogSetting:
