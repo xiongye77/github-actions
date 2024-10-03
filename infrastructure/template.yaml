@@ -10,31 +10,9 @@ Parameters:
 
 Resources:
 
-  # Define the /users resource
-  UsersResource:
-    Type: AWS::ApiGateway::Resource
-    Properties:
-      ParentId: !GetAtt ApiGateway.RootResourceId
-      PathPart: users
-      RestApiId: !Ref ApiGateway
 
-  # Define the /users/{userId} resource
-  UserIdResource:
-    Type: AWS::ApiGateway::Resource
-    Properties:
-      ParentId: !Ref UsersResource
-      PathPart: '{UserID}'
-      RestApiId: !Ref ApiGateway
 
-  GetUserMethod:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      AuthorizationType: NONE
-      HttpMethod: GET
-      ResourceId: !Ref UserIdResource
-      RestApiId: !Ref ApiGateway
-      RequestParameters:
-        method.request.path.userId: true 
+
       
   ApiGatewayCloudWatchLogsRole:
     Type: AWS::IAM::Role
@@ -106,6 +84,8 @@ Resources:
           Properties:
             Path: /users/{UserID}
             Method: get
+            RequestParameters:      # Specify the request parameters
+              - method.request.path.UserID: true
             RestApiId: !Ref ApiGateway
             Auth:
               ApiKeyRequired: true
