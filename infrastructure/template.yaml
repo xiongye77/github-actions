@@ -180,9 +180,8 @@ Resources:
           MetricsEnabled: true
           CachingEnabled: true
           CacheTtlInSeconds: 600
-          ResourcePath: "/UserID"
-          HttpMethod: "GET"
-
+          ResourcePath: "/*"
+          HttpMethod: "*"
       CacheClusterEnabled: true
       CacheClusterSize: "0.5"
       AccessLogSetting:
