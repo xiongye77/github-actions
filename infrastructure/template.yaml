@@ -178,9 +178,9 @@ Resources:
           MetricsEnabled: true
           CachingEnabled: true
           CacheTtlInSeconds: 300
-        - ResourcePath: "/UserID"
-          HttpMethod: "GET"
-          CachingEnabled: true
+        - HttpMethod: "GET"
+          ResourcePath: "/UserID"
+          CachingEnabled: True
           
       CacheClusterEnabled: true
       CacheClusterSize: "0.5"
