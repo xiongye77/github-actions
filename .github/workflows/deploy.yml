@@ -94,7 +94,9 @@ jobs:
         run: |
           # Replace with your actual API endpoint
           API_ENDPOINT=$(aws cloudformation describe-stacks --stack-name my-serverless-app --query "Stacks[0].Outputs[?OutputKey=='UsersApiURL'].OutputValue" --output text)
-          
+          API_KEY_ID=$(aws cloudformation describe-stack-resource  --stack-name  my-serverless-app --logical-resource-id MyApiKey  --query 'StackResourceDetail.PhysicalResourceId'  --output text)   
+          API_KEY_VALUE=$(aws apigateway get-api-key --api-key $API_KEY_ID --include-value --query 'value' --output text)
+          echo $API_KEY_VALUE
           # Test Create User
           CREATE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST $API_ENDPOINT/users \
             -H "Content-Type: application/json" \
@@ -104,8 +106,8 @@ jobs:
             exit 1
           fi
           
-          # Test Get User
-          GET_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X GET $API_ENDPOINT/users/U1001)
+          # Test Get User to add API key in the curl url 
+          GET_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X GET $API_ENDPOINT/users/U1001 -H "x-api-key:$API_KEY_VALUE")
           if [ "$GET_RESPONSE" -ne 200 ]; then
             echo "Get User failed with status code $GET_RESPONSE"
             exit 1
