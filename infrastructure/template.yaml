@@ -87,7 +87,7 @@ Resources:
             RequestParameters:      # Specify the request parameters
               - method.request.path.UserID:
                   Required: true
-                  Caching: false          
+                  Caching: true          
             RestApiId: !Ref ApiGateway
             Auth:
               ApiKeyRequired: true
