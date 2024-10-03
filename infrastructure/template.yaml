@@ -7,6 +7,7 @@ Parameters:
     Type: String
     Description: "Custom domain name for CloudFront distribution"
     Default: "apigw-cdn.yexiongcodetest.com"  # Replace with your custom domain name
+
 Resources:
   ApiGatewayCloudWatchLogsRole:
     Type: AWS::IAM::Role
