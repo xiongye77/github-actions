@@ -173,15 +173,9 @@ Resources:
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
         AllowOrigin: "'*'"
       MethodSettings:
-        - DataTraceEnabled: true
-          LoggingLevel: INFO
-          MetricsEnabled: true
-          CachingEnabled: true
-          CacheTtlInSeconds: 300
         - HttpMethod: "GET"
           ResourcePath: "/UserID"
-          CachingEnabled: True
-          
+          CachingEnabled: True    
       CacheClusterEnabled: true
       CacheClusterSize: "0.5"
       AccessLogSetting:
