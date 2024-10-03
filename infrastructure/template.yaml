@@ -182,10 +182,11 @@ Resources:
           CacheTtlInSeconds: 600
           ResourcePath: "/*"
           HttpMethod: "*"
-        - HttpMethod: "GET"
-          ResourcePath: "/UserID"
-          CacheTtlInSeconds: 60
-          CachingEnabled: True
+        - ResourcePath: '/users/{userId}'  # Enable method-specific caching
+          HttpMethod: GET
+          CachingEnabled: true
+          CacheTtlInSeconds: 600  # Set TTL as per your requirement (1 hour here)
+          CacheDataEncrypted: true  # Optional: encrypt cached data
       CacheClusterEnabled: true
       CacheClusterSize: "0.5"
       AccessLogSetting:
