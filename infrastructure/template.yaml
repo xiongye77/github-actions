@@ -178,7 +178,7 @@ Resources:
           LoggingLevel: INFO
           MetricsEnabled: true
           CachingEnabled: true
-          CacheTtlInSeconds: 300
+          CacheTtlInSeconds: 600
       MethodSettings:
         - HttpMethod: "GET"
           ResourcePath: "/UserID"
