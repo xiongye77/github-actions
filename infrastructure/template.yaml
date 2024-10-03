@@ -178,6 +178,7 @@ Resources:
           MetricsEnabled: true
           CachingEnabled: true
           CacheTtlInSeconds: 300
+      MethodSettings:
         - HttpMethod: "GET"
           ResourcePath: "/UserID"
           CachingEnabled: True    
