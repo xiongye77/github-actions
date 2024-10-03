@@ -85,7 +85,9 @@ Resources:
             Path: /users/{UserID}
             Method: get
             RequestParameters:      # Specify the request parameters
-              - method.request.path.UserID: true
+              - method.request.path.UserID:
+                Required: true
+                Caching: false          
             RestApiId: !Ref ApiGateway
             Auth:
               ApiKeyRequired: true
