@@ -182,11 +182,6 @@ Resources:
           MetricsEnabled: true
           CachingEnabled: true
           CacheTtlInSeconds: 600
-        - ResourcePath: '/users/{UserID}'   # Specify the path for method-level settings
-          HttpMethod: GET
-          CachingEnabled: true
-          CacheTtlInSeconds: 600
-          CacheDataEncrypted: true
       CacheClusterEnabled: true
       CacheClusterSize: "0.5"
       AccessLogSetting:
