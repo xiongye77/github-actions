@@ -22,8 +22,9 @@ On your Mac check your IP address and add it to IP ruleset to allow traffic to C
 <img width="1696" alt="image" src="https://github.com/user-attachments/assets/0f9ad865-6e12-4cc8-8016-545aa9a1d117">
 
 
+Need add your Mac IP to WAF allow IP list or your request will be blocked 
 
-
+<img width="1307" alt="image" src="https://github.com/user-attachments/assets/f90af684-50ed-481a-92bf-50e46f8d07fc">
 
 
 
