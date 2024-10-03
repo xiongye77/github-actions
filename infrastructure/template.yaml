@@ -137,7 +137,7 @@ Resources:
 
   MyUsagePlan:
     Type: AWS::ApiGateway::UsagePlan
-    DependsOn: !Ref ApiGateway.StageName
+    DependsOn: !Ref ApiGateway
     Properties:
       UsagePlanName: MyUsagePlan
       Description: "Usage plan for MyApi"
