@@ -1,11 +1,16 @@
 name: Deploy Serverless Application
 
 on:
-  push:
-    branches:
-      - github-action-api-gw-lambda-dynamodb
-    paths-ignore:
-      - 'README.md'
+  workflow_call:
+    inputs:
+      aws_region:
+        required: true
+        type: string
+      role_to_assume:
+        required: true
+        type: string
+
+
 permissions:
   id-token: write  # Required for OIDC authentication
   contents: read   # Provides access to repository contents
