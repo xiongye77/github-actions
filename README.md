@@ -28,6 +28,10 @@ Need add your Mac IP to WAF allow IP list or your request will be blocked
 
 
 
+<img width="1086" alt="image" src="https://github.com/user-attachments/assets/8bedbe2c-386b-41c0-91ad-44a058b4680e">
+
+
+
 # github-actions
 
 ![image](https://github.com/xiongye77/github-actions/assets/36766101/eb89464c-d7de-4899-a1f9-331b524ff29c)
