@@ -102,7 +102,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::582140066777:role/github-action-role
-          aws-region: ${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }
+          aws-region: ${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }}
 
       - name: Create S3 Bucket
         run: |
