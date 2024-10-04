@@ -1,0 +1,77 @@
+# .github/workflows/integration-tests.yml
+name: Reusable Integration Tests
+
+on:
+  workflow_call:
+    inputs:
+      api_endpoint:
+        required: true
+        type: string
+      api_key:
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  integration-tests:
+    name: 'Run Integration Tests'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::582140066777:role/github-action-role  # Update with your role ARN
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Run Integration Tests
+        run: |
+          API_ENDPOINT=${{ inputs.api_endpoint }}
+          API_KEY_VALUE=${{ inputs.api_key }}
+
+          # Test Create User
+          CREATE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$API_ENDPOINT/users" \
+            -H "Content-Type: application/json" \
+            -d '{"UserID": "U1001", "Name": "Alice", "Email": "alice@example.com", "Age": "25"}')
+          if [ "$CREATE_RESPONSE" -ne 201 ]; then
+            echo "Create User failed with status code $CREATE_RESPONSE"
+            exit 1
+          fi
+
+          # Test Get User
+          GET_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X GET "$API_ENDPOINT/users/U1001" \
+            -H "x-api-key:$API_KEY_VALUE")
+          if [ "$GET_RESPONSE" -ne 200 ]; then
+            echo "Get User failed with status code $GET_RESPONSE"
+            exit 1
+          fi
+
+          # Test Update User
+          UPDATE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X PUT "$API_ENDPOINT/users/U1001" \
+            -H "Content-Type: application/json" \
+            -d '{"Email": "alice.new@example.com", "Age": "26"}')
+          if [ "$UPDATE_RESPONSE" -ne 200 ]; then
+            echo "Update User failed with status code $UPDATE_RESPONSE"
+            exit 1
+          fi
+
+          # Test Delete User
+          DELETE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE "$API_ENDPOINT/users/U1001")
+          if [ "$DELETE_RESPONSE" -ne 200 ]; then
+            echo "Delete User failed with status code $DELETE_RESPONSE"
+            exit 1
+          fi
+
+          # Add User Again for Demo
+          CREATE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$API_ENDPOINT/users" \
+            -H "Content-Type: application/json" \
+            -d '{"UserID": "U1001", "Name": "Alice", "Email": "alice@example.com", "Age": "25"}')
+          if [ "$CREATE_RESPONSE" -ne 201 ]; then
+            echo "Create User failed with status code $CREATE_RESPONSE"
+            exit 1
+          fi
+
+          echo "All integration tests passed successfully."
