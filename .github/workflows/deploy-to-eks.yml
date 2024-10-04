@@ -1,0 +1,38 @@
+# .github/workflows/deploy-to-eks.yml
+name: Reusable Deploy to EKS Cluster
+
+on:
+  workflow_call:
+    inputs:
+      kubeconfig:
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-to-eks:
+    name: 'Deploy Applications to EKS Cluster'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Configure kubeconfig
+        run: |
+          echo "${{ inputs.kubeconfig }}" > kubeconfig.yaml
+          export KUBECONFIG=$(pwd)/kubeconfig.yaml
+
+      - name: Deploy Kubernetes Manifests
+        run: |
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/ingress.yaml
