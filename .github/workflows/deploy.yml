@@ -11,7 +11,59 @@ permissions:
   contents: read   # Provides access to repository contents
 
 jobs:
-  build-deploy:
+  provision-eks:
+    name: 'Provision EKS Cluster with Terraform'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.3.9  # Specify your Terraform version
+
+          
+      - name: Extract S3 Bucket Name and AWS Region
+        id: extract_s3_bucket_aws_region
+        run: |
+         s3_bucket=$(python -c 'import toml; config = toml.load("infrastructure/samconfig.toml"); print(config["default"]["global"]["parameters"]["s3_bucket"])')
+         echo "s3_bucket=${s3_bucket}" >> $GITHUB_OUTPUT
+         aws_region=$(python -c 'import toml; config = toml.load("infrastructure/samconfig.toml"); print(config["default"]["global"]["parameters"]["region"])')
+         echo "aws_region=${aws_region}" >> $GITHUB_OUTPUT
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::582140066777:role/github-action-role
+          aws-region: ${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }}
+
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: terraform init
+
+      - name: Terraform Plan
+        working-directory: ./terraform
+        run: terraform plan -out=tfplan -var="aws_region=${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }}"
+
+      - name: Terraform Apply
+        working-directory: ./terraform
+        run: terraform apply -auto-approve tfplan
+
+      - name: Output EKS Cluster Info
+        id: eks_outputs
+        working-directory: ./terraform
+        run: |
+          echo "cluster_endpoint=$(terraform output -raw cluster_endpoint)" >> $GITHUB_OUTPUT
+          echo "kubeconfig=$(terraform output -raw kubeconfig)" >> $GITHUB_OUTPUT
+
+    outputs:
+      cluster_endpoint: ${{ steps.eks_outputs.outputs.cluster_endpoint }}
+      kubeconfig: ${{ steps.eks_outputs.outputs.kubeconfig }}
+  
+  
+  build-deploy-serverless:
     runs-on: ubuntu-latest
 
     steps:
