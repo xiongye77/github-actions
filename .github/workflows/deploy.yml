@@ -1,4 +1,5 @@
-name: Deploy Serverless Application
+# .github/workflows/control-deploy.yml
+name: Control Deploy Workflow
 
 on:
   push:
@@ -6,182 +7,40 @@ on:
       - github-action-api-gw-lambda-dynamodb
     paths-ignore:
       - 'README.md'
+
 permissions:
-  id-token: write  # Required for OIDC authentication
-  contents: read   # Provides access to repository contents
+  id-token: write
+  contents: read
 
 jobs:
   provision-eks:
-    name: 'Provision EKS Cluster with Terraform'
-    runs-on: ubuntu-latest
+    name: 'Provision EKS Cluster'
+    uses: ./.github/workflows/provision-eks.yml
+    with:
+      aws_region: ${{ secrets.AWS_REGION }}
+      role_to_assume: arn:aws:iam::582140066777:role/github-action-role  # Update with your role ARN
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.3.9  # Specify your Terraform version
-
-          
-      - name: Extract S3 Bucket Name and AWS Region
-        id: extract_s3_bucket_aws_region
-        run: |
-         s3_bucket=$(python -c 'import toml; config = toml.load("infrastructure/samconfig.toml"); print(config["default"]["global"]["parameters"]["s3_bucket"])')
-         echo "s3_bucket=${s3_bucket}" >> $GITHUB_OUTPUT
-         aws_region=$(python -c 'import toml; config = toml.load("infrastructure/samconfig.toml"); print(config["default"]["global"]["parameters"]["region"])')
-         echo "aws_region=${aws_region}" >> $GITHUB_OUTPUT
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          role-to-assume: arn:aws:iam::582140066777:role/github-action-role
-          aws-region: ${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }}
-
-      - name: Terraform Init
-        working-directory: ./terraform
-        run: terraform init
-
-      - name: Terraform Plan
-        working-directory: ./terraform
-        run: terraform plan -out=tfplan -var="aws_region=${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }}"
-
-      - name: Terraform Apply
-        working-directory: ./terraform
-        run: terraform apply -auto-approve tfplan
-
-      - name: Output EKS Cluster Info
-        id: eks_outputs
-        working-directory: ./terraform
-        run: |
-          echo "cluster_endpoint=$(terraform output -raw cluster_endpoint)" >> $GITHUB_OUTPUT
-          echo "kubeconfig=$(terraform output -raw kubeconfig)" >> $GITHUB_OUTPUT
-
-    outputs:
-      cluster_endpoint: ${{ steps.eks_outputs.outputs.cluster_endpoint }}
-      kubeconfig: ${{ steps.eks_outputs.outputs.kubeconfig }}
-  
-  
   build-deploy-serverless:
-    runs-on: ubuntu-latest
-
-    steps:
-      # Step 1: Checkout the repository
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      # Step 2: Set up Python environment
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      # Step 3: Install AWS SAM CLI
-      - name: Install AWS SAM CLI
-        run: |
-          pip install aws-sam-cli
-      
-      - name: Install dependencies
-        run: |
-          # Example for Python Lambda functions
-          pip install toml
-
-          
-      - name: Extract S3 Bucket Name and AWS Region
-        id: extract_s3_bucket_aws_region
-        run: |
-         s3_bucket=$(python -c 'import toml; config = toml.load("infrastructure/samconfig.toml"); print(config["default"]["global"]["parameters"]["s3_bucket"])')
-         echo "s3_bucket=${s3_bucket}" >> $GITHUB_OUTPUT
-         aws_region=$(python -c 'import toml; config = toml.load("infrastructure/samconfig.toml"); print(config["default"]["global"]["parameters"]["region"])')
-         echo "aws_region=${aws_region}" >> $GITHUB_OUTPUT
-         
-         cat $GITHUB_OUTPUT
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: arn:aws:iam::582140066777:role/github-action-role
-          aws-region: ${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }}
-
-      - name: Create S3 Bucket
-        run: |
-          BUCKET_NAME="${{ steps.extract_s3_bucket_aws_region.outputs.s3_bucket }}"
-          aws s3api head-bucket --bucket $BUCKET_NAME 2>/dev/null
-          EXIT_CODE=$?
-
-          if [ $EXIT_CODE -eq 0 ]; then
-              echo "Bucket '$BUCKET_NAME' exists and you have access."
-          else
-              echo "Bucket '$BUCKET_NAME' does not exist or you do not have access."
-              aws s3 mb s3://${{ steps.extract_s3_bucket_aws_region.outputs.s3_bucket }} --region ${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }}
-          fi
-          
-      - name : Validate the SAM application
-        run: |
-          sam validate --template-file infrastructure/template.yaml
-          
-      # Step 5: Build the SAM application
-      - name: Build SAM Application
-        run: |
-          sam build --template-file infrastructure/template.yaml
-
-      # Step 6: Deploy the SAM application
-      - name: Deploy SAM Application
-        run: |
-
-          sam deploy --config-file infrastructure/samconfig.toml
+    name: 'Build and Deploy Serverless Components'
+    needs: provision-eks
+    uses: ./.github/workflows/build-deploy-serverless.yml
+    with:
+      aws_region: ${{ secrets.AWS_REGION }}
+      role_to_assume: arn:aws:iam::582140066777:role/github-action-role  # Update with your role ARN
 
 
-      # Step 7: Run Integration Tests (Optional)
-      - name: Run Integration Tests
-        run: |
-          # Replace with your actual API endpoint
-          API_ENDPOINT=$(aws cloudformation describe-stacks --stack-name my-serverless-app --query "Stacks[0].Outputs[?OutputKey=='UsersApiURL'].OutputValue" --output text)
-          API_KEY_ID=$(aws cloudformation describe-stack-resource  --stack-name  my-serverless-app --logical-resource-id MyApiKey  --query 'StackResourceDetail.PhysicalResourceId'  --output text)   
-          API_KEY_VALUE=$(aws apigateway get-api-key --api-key $API_KEY_ID --include-value --query 'value' --output text)
-          echo $API_KEY_VALUE
-          # Test Create User
-          CREATE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST $API_ENDPOINT/users \
-            -H "Content-Type: application/json" \
-            -d '{"UserID": "U1001", "Name": "Alice", "Email": "alice@example.com", "Age": "25"}')
-          if [ "$CREATE_RESPONSE" -ne 201 ]; then
-            echo "Create User failed with status code $CREATE_RESPONSE"
-            exit 1
-          fi
-          
-          # Test Get User to add API key in the curl url 
-          GET_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X GET $API_ENDPOINT/users/U1001 -H "x-api-key:$API_KEY_VALUE")
-          if [ "$GET_RESPONSE" -ne 200 ]; then
-            echo "Get User failed with status code $GET_RESPONSE"
-            exit 1
-          fi
-          
-          # Test Update User
-          UPDATE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X PUT $API_ENDPOINT/users/U1001 \
-            -H "Content-Type: application/json" \
-            -d '{"Email": "alice.new@example.com", "Age": "26"}')
-          if [ "$UPDATE_RESPONSE" -ne 200 ]; then
-            echo "Update User failed with status code $UPDATE_RESPONSE"
-            exit 1
-          fi
-          
-          # Test Delete User
-          DELETE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE $API_ENDPOINT/users/U1001)
-          if [ "$DELETE_RESPONSE" -ne 200 ]; then
-            echo "Delete User failed with status code $DELETE_RESPONSE"
-            exit 1
-          fi
+  deploy-to-eks:
+    name: 'Deploy Applications to EKS'
+    needs: [provision-eks, build-deploy-serverless]
+    uses: ./.github/workflows/deploy-to-eks.yml
+    with:
+      kubeconfig: ${{ jobs.provision-eks.outputs.kubeconfig }}
 
-          # Add user again for demo purpose 
-          
-          CREATE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST $API_ENDPOINT/users \
-            -H "Content-Type: application/json" \
-            -d '{"UserID": "U1001", "Name": "Alice", "Email": "alice@example.com", "Age": "25"}')
-          if [ "$CREATE_RESPONSE" -ne 201 ]; then
-            echo "Create User failed with status code $CREATE_RESPONSE"
-            exit 1
-          fi
-          
-          echo "All integration tests passed successfully."
-
+  integration-tests:
+    name: 'Run Integration Tests'
+    needs: [build-deploy-serverless, deploy-to-eks]
+    uses: ./.github/workflows/integration-tests.yml
+    with:
+      api_endpoint: ${{ jobs.build-deploy-serverless.outputs.api_endpoint }}
+      api_key: ${{ jobs.build-deploy-serverless.outputs.api_key }}
