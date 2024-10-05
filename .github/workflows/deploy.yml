@@ -28,7 +28,16 @@ jobs:
       aws_region: us-east-1
       role_to_assume: arn:aws:iam::582140066777:role/github-action-role  # Update with your role ARN
     
+  echo-dns-name: 
+     runs-on: ubuntu-latest
+     name: 'echo alb dns name'
+     needs: [build-deploy-serverless]
+     steps:
+     - name: Use the output from previous job
+       run: |
+        echo "The result from previous job is: ${{ needs.deploy-to-eks.outputs.LB_DNS }}"
 
+  
   build-deploy-serverless:
     name: 'Build and Deploy Serverless Components'
     needs: [deploy-to-eks]
@@ -38,14 +47,7 @@ jobs:
       role_to_assume: arn:aws:iam::582140066777:role/github-action-role  # Update with your role ARN
       
 
-  echo-dns-name: 
-     runs-on: ubuntu-latest
-     name: 'echo alb dns name'
-     needs: [build-deploy-serverless]
-     steps:
-     - name: Use the output from previous job
-       run: |
-        echo "The result from previous job is: ${{ needs.build-deploy-serverless.outputs.LB_DNS }}"
+
 
   integration-tests:
     name: 'Run Integration Tests'
