@@ -36,20 +36,20 @@ jobs:
           aws-region: ${{ inputs.aws_region }}
 
       - name: Terraform Init
-        working-directory: ../.././infrastructure/terraform
+        working-directory: ./.github/workflows/../.././infrastructure/terraform
         run: terraform init
 
       - name: Terraform Plan
-        working-directory: ../infrastructure/terraform
+        working-directory: ./.github/workflows/../.././infrastructure/terraform
         run: terraform plan -out=tfplan -var="aws_region=${{ inputs.aws_region }}"
 
       - name: Terraform Apply
-        working-directory: ../.././infrastructure/terraform
+        working-directory: ./.github/workflows/../.././infrastructure/terraform
         run: terraform apply -auto-approve tfplan
 
       - name: Output EKS Cluster Info
         id: eks_outputs
-        working-directory: ../.././infrastructure/terraform
+        working-directory: ./.github/workflows/../.././infrastructure/terraform
         run: |
           echo "cluster_endpoint=$(terraform output -raw cluster_endpoint)" >> $GITHUB_OUTPUT
           echo "kubeconfig=$(terraform output -raw kubeconfig)" >> $GITHUB_OUTPUT
