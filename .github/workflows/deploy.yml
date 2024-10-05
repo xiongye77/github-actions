@@ -27,6 +27,7 @@ jobs:
     with:
       aws_region: us-east-1
       role_to_assume: arn:aws:iam::582140066777:role/github-action-role  # Update with your role ARN
+    
 
   build-deploy-serverless:
     name: 'Build and Deploy Serverless Components'
@@ -41,7 +42,7 @@ jobs:
 
   integration-tests:
     name: 'Run Integration Tests'
-    needs: [deploy-to-eks]
+    needs: [build-deploy-serverless]
     uses: ./.github/workflows/integration-tests.yml
     with:
       api_endpoint: ${{ needs.build-deploy-serverless.outputs.api_endpoint }}
