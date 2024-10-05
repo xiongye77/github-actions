@@ -34,8 +34,7 @@ jobs:
     name: 'Deploy Applications to EKS'
     needs: [provision-eks, build-deploy-serverless]
     uses: ./.github/workflows/deploy-to-eks.yml
-    with:
-      kubeconfig: ${{ needs.provision-eks.outputs.kubeconfig }}
+
 
   integration-tests:
     name: 'Run Integration Tests'
