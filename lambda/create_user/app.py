@@ -29,7 +29,6 @@ def handler(event, context):
             'body': json.dumps({'message': 'User created successfully'})
         }
 
-
     
         
     except ClientError as e:
