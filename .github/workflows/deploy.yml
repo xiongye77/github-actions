@@ -17,7 +17,7 @@ jobs:
     name: 'Provision EKS Cluster'
     uses: ./.github/workflows/provision-eks.yml
     with:
-      aws_region: ${{ secrets.AWS_REGION }}
+      aws_region: us-east-1
       role_to_assume: arn:aws:iam::582140066777:role/github-action-role  # Update with your role ARN
 
 
@@ -26,7 +26,7 @@ jobs:
     needs: provision-eks
     uses: ./.github/workflows/build-deploy-serverless.yml
     with:
-      aws_region: ${{ secrets.AWS_REGION }}
+      aws_region: us-east-1
       role_to_assume: arn:aws:iam::582140066777:role/github-action-role  # Update with your role ARN
 
 
