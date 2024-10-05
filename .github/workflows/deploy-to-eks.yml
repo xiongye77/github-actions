@@ -20,7 +20,7 @@ jobs:
     name: 'Deploy Applications to EKS Cluster'
     runs-on: ubuntu-latest
     outputs:
-      LB_DNS: ${{ steps.get-dns-name.outputs.LB_DNS }}
+      lb_dns: ${{ steps.get-dns-name.outputs.lb_dns }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -55,8 +55,8 @@ jobs:
       - name: get LB DNS name
         id: get-dns-name
         run: |
-          LB_DNS=$(kubectl get svc nginx-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')         
-          echo $LB_DNS
-          echo "LB_DNS=$LB_DNS" >> "$GITHUB_OUTPUT"
-          echo "$GITHUB_OUTPUT"
+          lb_dns=$(kubectl get svc nginx-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')         
+          echo $lb_dns
+          echo "lb_dns=$lb_dns" >> "$GITHUB_OUTPUT"
+          cat $GITHUB_OUTPUT
 
