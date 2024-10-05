@@ -53,13 +53,4 @@ jobs:
         working-directory: ./.github/workflows/../.././infrastructure/terraform
         run: terraform apply -auto-approve tfplan
 
-      - name: Output EKS Cluster Info
-        id: eks_outputs
-        working-directory: ./.github/workflows/../.././infrastructure/terraform
-        run: |
-          echo "cluster_endpoint=$(terraform output -raw cluster_endpoint)" >> $GITHUB_OUTPUT
-          echo "kubeconfig=$(terraform output -raw kubeconfig)" >> $GITHUB_OUTPUT
 
-    outputs:
-      cluster_endpoint: ${{ steps.eks_outputs.outputs.cluster_endpoint }}
-      kubeconfig: ${{ steps.eks_outputs.outputs.kubeconfig }}
