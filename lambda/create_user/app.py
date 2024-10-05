@@ -28,6 +28,9 @@ def handler(event, context):
             'statusCode': 201,
             'body': json.dumps({'message': 'User created successfully'})
         }
+
+
+    
         
     except ClientError as e:
         if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
