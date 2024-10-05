@@ -30,6 +30,22 @@ Need add your Mac IP to WAF allow IP list or your request will be blocked
 
 <img width="1086" alt="image" src="https://github.com/user-attachments/assets/8bedbe2c-386b-41c0-91ad-44a058b4680e">
 
+Use cloudfront to cache Web page 
+
+<img width="1696" alt="image" src="https://github.com/user-attachments/assets/81c01a7f-7e1c-4fbe-bf57-7db37ed11b57">
+
+Cloudfront has two origins, one is Nginx pod running on EKS , one is API GW which has lambda function and Dynamodb as backend
+
+<img width="1378" alt="image" src="https://github.com/user-attachments/assets/9312bd7a-f075-4e4e-9088-a4fdf2058c72">
+
+We use managed cache policy for both ALB and API GW
+
+<img width="734" alt="image" src="https://github.com/user-attachments/assets/941872b0-48cc-461b-ac58-c0d7a4cd1af9">
+<img width="805" alt="image" src="https://github.com/user-attachments/assets/70beb430-97fc-4755-8cd1-1691456c02ea">
+
+API GW also has cache enabled so from X-RAY we can find cache query does not invoke lambda function.
+<img width="1367" alt="image" src="https://github.com/user-attachments/assets/0728dc06-64dd-4760-9f80-3b7073bf09b9">
+
 
 
 # github-actions
