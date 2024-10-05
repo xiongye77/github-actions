@@ -31,7 +31,7 @@ jobs:
   echo-dns-name: 
      runs-on: ubuntu-latest
      name: 'echo alb dns name'
-     needs: [build-deploy-serverless]
+     needs: [deploy-to-eks]
      steps:
      - name: Use the output from previous job
        run: |
@@ -40,7 +40,7 @@ jobs:
   
   build-deploy-serverless:
     name: 'Build and Deploy Serverless Components'
-    needs: [deploy-to-eks]
+    needs: [echo-dns-name]
     uses: ./.github/workflows/build-deploy-serverless.yml
     with:
       aws_region: us-east-1
