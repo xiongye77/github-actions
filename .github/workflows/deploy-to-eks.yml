@@ -19,7 +19,8 @@ jobs:
   deploy-to-eks:
     name: 'Deploy Applications to EKS Cluster'
     runs-on: ubuntu-latest
-
+    outputs:
+      dns-name: ${{ steps.get-dns-name.outputs.LB_DNS }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -52,8 +53,9 @@ jobs:
           kubectl apply -f k8s/service.yaml
 
       - name: get LB DNS name
+        id: get-dns-name
         run:
        # Capture Load Balancer DNS into LB_DNS variable
           LB_DNS=$(kubectl get svc nginx-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')         
-          
+          echo "LB_DNS=$LB_DNS" >> $GITHUB_ENV
 
