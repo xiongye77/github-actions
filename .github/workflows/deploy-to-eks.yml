@@ -62,10 +62,10 @@ jobs:
           
           IMAGE_TAG=$(git rev-parse --short HEAD)
           # Build the Docker image
-          docker build -t $REPOSITORY_URI:$IMAGE_TAG .
+          docker build -t ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG} .
 
           # Push the Docker image to ECR
-          docker push $REPOSITORY_URI:$IMAGE_TAG
+          docker push ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
 
       - name: Deploy Kubernetes Manifests
         working-directory: ./.github/workflows/../.././infrastructure/
@@ -75,7 +75,7 @@ jobs:
 
       - name: Deploy NGINX
         run: |
-          kubectl set image deployment/nginx nginx=$ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+          kubectl set image deployment/nginx nginx=$ECR_REGISTRY/$ECR_REPO:${IMAGE_TAG}
           kubectl rollout status deployment/nginx
       
       - name: get LB DNS name
