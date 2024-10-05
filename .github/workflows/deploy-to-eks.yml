@@ -59,4 +59,5 @@ jobs:
           echo $lb_dns
           echo "lb_dns=$lb_dns" >> "$GITHUB_OUTPUT"
           cat $GITHUB_OUTPUT
+          echo steps.get-dns-name.outputs.lb_dns
 

@@ -35,7 +35,7 @@ jobs:
      steps:
      - name: Use the output from previous job
        run: |
-        echo "The result from previous job is: ${{needs.deploy-to-eks.outputs }}"
+        echo "The result from previous job is: ${{needs.deploy-to-eks.outputs.lb_dns }}"
 
   
   build-deploy-serverless:
