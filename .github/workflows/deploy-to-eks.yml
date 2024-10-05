@@ -75,8 +75,8 @@ jobs:
 
       - name: Deploy NGINX
         run: |
-          kubectl set image deployment/nginx nginx=$ECR_REGISTRY/$ECR_REPO:${IMAGE_TAG}
-          kubectl rollout status deployment/nginx
+          kubectl set image deployment/nginx-deployment nginx=$ECR_REGISTRY/$ECR_REPO:${IMAGE_TAG}
+          kubectl rollout status deployment/nginx-deployment
       
       - name: get LB DNS name
         id: get_dns_name
