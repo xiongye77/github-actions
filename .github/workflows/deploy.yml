@@ -33,10 +33,13 @@ jobs:
      name: 'echo alb dns name'
      needs: [deploy-to-eks]
      steps:
-     - name: Use the output from previous job
-       run: |
-        echo "The result from previous job is: ${{needs.deploy-to-eks.outputs.lb_dns }}"
-
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: my-output
+      - name: Read the output
+        run: |
+          cat output.txt
   
   build-deploy-serverless:
     name: 'Build and Deploy Serverless Components'
