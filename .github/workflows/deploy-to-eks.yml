@@ -10,6 +10,11 @@ on:
       role_to_assume:
         required: true
         type: string
+env:
+  ECR_REGISTRY: 582140066777.dkr.ecr.us-east-1.amazonaws.com  # Update with your ECR registry
+  ECR_REPOSITORY: nginx  # Update with your ECR repository
+
+
 
 permissions:
   id-token: write
@@ -46,12 +51,33 @@ jobs:
       - name: Get Kubernetes cluster info
         run: kubectl cluster-info
 
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to ECR
+        working-directory: ./.github/workflows/../.././infrastructure/k8s/
+        run: |
+          # Define the image name and tag
+          IMAGE_TAG="${{ github.sha }}"
+
+          # Build the Docker image
+          docker build -t $REPOSITORY_URI:$IMAGE_TAG .
+
+          # Push the Docker image to ECR
+          docker push $REPOSITORY_URI:$IMAGE_TAG
+
       - name: Deploy Kubernetes Manifests
         working-directory: ./.github/workflows/../.././infrastructure/
         run: |
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/service.yaml
 
+      - name: Deploy NGINX
+        run: |
+          kubectl set image deployment/nginx nginx=$ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+          kubectl rollout status deployment/nginx
+      
       - name: get LB DNS name
         id: get_dns_name
         run: |
