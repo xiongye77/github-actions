@@ -34,7 +34,13 @@ jobs:
         with:
           role-to-assume: ${{ inputs.role_to_assume }}
           aws-region: ${{ inputs.aws_region }}
+      - name: install tree 
+        run:  apt-get install -y tree
 
+      - name: Run tree command
+        working-directory: ./.github/workflows/../.././infrastructure/terraform
+        run: tree
+        
       - name: Terraform Init
         working-directory: ./.github/workflows/../.././infrastructure/terraform
         run: terraform init
