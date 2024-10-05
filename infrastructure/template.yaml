@@ -11,11 +11,7 @@ Parameters:
     Type: String
     Description: "The ALB name add as cloudfront origin"
 Resources:
-
-
-
-
-      
+    
   ApiGatewayCloudWatchLogsRole:
     Type: AWS::IAM::Role
     Properties:
@@ -337,6 +333,8 @@ Resources:
               OriginProtocolPolicy: https-only
           - DomainName: !Ref DNSName
             Id: ALBOrigin
+            CustomOriginConfig:
+              OriginProtocolPolicy: http-only
         Enabled: true
         DefaultCacheBehavior:
           TargetOriginId: ApiOrigin
@@ -349,6 +347,24 @@ Resources:
             - HEAD
           CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad   
           OriginRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
+        CacheBehaviors:
+          - PathPattern: "/"  # Route traffic for '/' to ALB
+            TargetOriginId: ALBOrigin
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+              - PUT
+              - POST
+              - DELETE
+            CachedMethods:
+              - GET
+              - HEAD
+            ForwardedValues:
+              QueryString: true
+              Cookies:
+                Forward: all
         DefaultRootObject: ""
         ViewerCertificate:
           AcmCertificateArn: !Ref SSLCertificate
