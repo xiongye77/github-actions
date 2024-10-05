@@ -350,7 +350,7 @@ Resources:
         CacheBehaviors:
           - PathPattern: "/"  # Route traffic for '/' to ALB
             TargetOriginId: ALBOrigin
-            ViewerProtocolPolicy: redirect-to-https
+            ViewerProtocolPolicy: allow-all
             AllowedMethods:
               - GET
               - HEAD
@@ -361,6 +361,8 @@ Resources:
               QueryString: true
               Cookies:
                 Forward: all
+            CachePolicyId: 83da9c7e-98b4-4e11-a168-04f0df8e2c65   
+            OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3
         DefaultRootObject: ""
         ViewerCertificate:
           AcmCertificateArn: !Ref SSLCertificate
