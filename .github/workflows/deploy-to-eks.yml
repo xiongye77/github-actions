@@ -4,7 +4,10 @@ name: Reusable Deploy to EKS Cluster
 on:
   workflow_call:
     inputs:
-      kubeconfig:
+      aws_region:
+        required: true
+        type: string
+      role_to_assume:
         required: true
         type: string
 
