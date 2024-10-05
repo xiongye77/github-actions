@@ -20,7 +20,7 @@ jobs:
     name: 'Deploy Applications to EKS Cluster'
     runs-on: ubuntu-latest
     outputs:
-      dns-name: ${{ steps.get-dns-name.outputs.LB_DNS }}
+      LB_DNS: ${{ steps.get-dns-name.outputs.LB_DNS }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
