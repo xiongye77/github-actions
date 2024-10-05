@@ -50,4 +50,10 @@ jobs:
         run: |
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/service.yaml
-          kubectl apply -f k8s/ingress.yaml
+
+      - name: get LB DNS name
+        run:
+       # Capture Load Balancer DNS into LB_DNS variable
+          LB_DNS=$(kubectl get svc nginx-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')         
+          
+
