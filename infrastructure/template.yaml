@@ -354,10 +354,6 @@ Resources:
             AllowedMethods:
               - GET
               - HEAD
-              - OPTIONS
-              - PUT
-              - POST
-              - DELETE
             CachedMethods:
               - GET
               - HEAD
