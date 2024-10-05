@@ -95,5 +95,5 @@ jobs:
       - name: Deploy SAM Application
         run: |
 
-          sam deploy --config-file infrastructure/samconfig.toml
+          sam deploy --config-file infrastructure/samconfig.toml --parameter-overrides DNSName=$lb_dns_name
 
