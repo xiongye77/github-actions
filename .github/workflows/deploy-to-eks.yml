@@ -59,8 +59,8 @@ jobs:
         working-directory: ./.github/workflows/../.././infrastructure/k8s/
         run: |
           # Define the image name and tag
-          IMAGE_TAG="${{ github.sha }}"
-
+          
+          IMAGE_TAG=$(git rev-parse --short HEAD)
           # Build the Docker image
           docker build -t $REPOSITORY_URI:$IMAGE_TAG .
 
