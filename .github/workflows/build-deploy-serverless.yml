@@ -70,6 +70,16 @@ jobs:
               aws s3 mb s3://${{ steps.extract_s3_bucket_aws_region.outputs.s3_bucket }} --region ${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }}
           fi
           
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: my-output
+
+      - name: Read the output
+        run: |
+          cat output.txt
+          lb_dns_name=$(cat  output.txt | cut -d' ' -f1)
+
       - name : Validate the SAM application
         run: |
           sam validate --template-file infrastructure/template.yaml
@@ -77,7 +87,9 @@ jobs:
       # Step 5: Build the SAM application
       - name: Build SAM Application
         run: |
-          sam build --template-file infrastructure/template.yaml
+          cat output.txt
+          lb_dns_name=$(cat  output.txt | cut -d' ' -f1)
+          sam build --template-file infrastructure/template.yaml --parameter-overrides DNSName=$lb_dns_name
 
       # Step 6: Deploy the SAM application
       - name: Deploy SAM Application
