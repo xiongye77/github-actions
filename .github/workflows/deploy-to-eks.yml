@@ -28,8 +28,10 @@ jobs:
 
       - name: Configure kubeconfig
         run: |
-          echo "${{ inputs.kubeconfig }}" > kubeconfig.yaml
-          export KUBECONFIG=$(pwd)/kubeconfig.yaml
+          aws eks update-kubeconfig --name my-eks-cluster --region us-east-1
+
+      - name: Get Kubernetes cluster info
+        run: kubectl cluster-info
 
       - name: Deploy Kubernetes Manifests
         run: |
