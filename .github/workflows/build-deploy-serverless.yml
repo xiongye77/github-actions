@@ -89,11 +89,11 @@ jobs:
         run: |
           cat output.txt
           lb_dns_name=$(cat  output.txt | awk -F '=' '{print $2}')
-          sam build --template-file infrastructure/template.yaml --parameter-overrides DNSName=$lb_dns_name
+          sam build --template-file infrastructure/template.yaml 
 
       # Step 6: Deploy the SAM application
       - name: Deploy SAM Application
         run: |
-
-          sam deploy --config-file infrastructure/samconfig.toml --parameter-overrides DNSName=$lb_dns_name
+          lb_dns_name=$(cat  output.txt | awk -F '=' '{print $2}')
+          sam deploy --config-file infrastructure/samconfig.toml --parameter-overrides ParameterKey=DNSName,ParameterValue=$lb_dns_name
 
