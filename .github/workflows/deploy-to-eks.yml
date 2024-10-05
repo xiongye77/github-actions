@@ -57,5 +57,5 @@ jobs:
         run:
        # Capture Load Balancer DNS into LB_DNS variable
           LB_DNS=$(kubectl get svc nginx-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')         
-          echo "LB_DNS=$LB_DNS" >> $GITHUB_ENV
+          echo "LB_DNS=$LB_DNS" >> $GITHUB_OUTPUT
 
