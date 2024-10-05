@@ -35,7 +35,7 @@ jobs:
     needs: [provision-eks, build-deploy-serverless]
     uses: ./.github/workflows/deploy-to-eks.yml
     with:
-      kubeconfig: ${{ steps.provision-eks.outputs.kubeconfig }}
+      kubeconfig: ${{ jobs.provision-eks.outputs.kubeconfig }}
 
   integration-tests:
     name: 'Run Integration Tests'
@@ -43,4 +43,4 @@ jobs:
     uses: ./.github/workflows/integration-tests.yml
     with:
       api_endpoint: ${{ jobs.build-deploy-serverless.outputs.api_endpoint }}
-      api_key: ${{ steps.build-deploy-serverless.outputs.api_key }}
+      api_key: ${{ jobs.build-deploy-serverless.outputs.api_key }}
