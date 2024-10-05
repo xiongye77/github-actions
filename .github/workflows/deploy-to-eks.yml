@@ -37,6 +37,7 @@ jobs:
         run: kubectl cluster-info
 
       - name: Deploy Kubernetes Manifests
+        working-directory: ./.github/workflows/../.././infrastructure/
         run: |
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/service.yaml
