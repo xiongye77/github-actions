@@ -61,7 +61,7 @@ jobs:
         run: |
           # Define the image name and tag
           
-          IMAGE_TAG = $(git rev-parse --short HEAD)
+          IMAGE_TAG=$(git rev-parse --short HEAD)
           # Build the Docker image
           docker build -t ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG} .
 
@@ -76,7 +76,7 @@ jobs:
 
       - name: Deploy NGINX
         run: |
-          IMAGE_TAG = $(git rev-parse --short HEAD)
+          IMAGE_TAG=$(git rev-parse --short HEAD)
           kubectl set image deployment/nginx-deployment nginx=$ECR_REGISTRY/$ECR_REPO:${IMAGE_TAG}
           kubectl rollout status deployment/nginx-deployment
       
