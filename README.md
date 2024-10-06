@@ -48,6 +48,12 @@ API GW also has cache enabled so from X-RAY we can find cache query does not inv
 
 
 
+Performance Monitor using Container Insight
+<img width="1676" alt="image" src="https://github.com/user-attachments/assets/1dcdc070-59c6-4d15-8182-2c412b9ac764">
+
+Log monitor using Log Insight 
+<img width="1679" alt="image" src="https://github.com/user-attachments/assets/c2c1a96b-e6cf-433d-a76f-496acf645655">
+
 # github-actions
 
 ![image](https://github.com/xiongye77/github-actions/assets/36766101/eb89464c-d7de-4899-a1f9-331b524ff29c)
