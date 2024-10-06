@@ -13,6 +13,7 @@ on:
 env:
   ECR_REGISTRY: 582140066777.dkr.ecr.us-east-1.amazonaws.com  # Update with your ECR registry
   ECR_REPO: nginx  # Update with your ECR repository
+  IMAGE_TAG: $(git rev-parse --short HEAD)
 
 
 
@@ -60,7 +61,7 @@ jobs:
         run: |
           # Define the image name and tag
           
-          IMAGE_TAG=$(git rev-parse --short HEAD)
+          
           # Build the Docker image
           docker build -t ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG} .
 
