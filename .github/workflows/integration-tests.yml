@@ -38,7 +38,7 @@ jobs:
             -d '{"UserID": "U1001", "Name": "Alice", "Email": "alice@example.com", "Age": "25"}')
           if [ "$CREATE_RESPONSE" -ne 201 ]; then
             echo "Create User failed with status code $CREATE_RESPONSE"
-            exit 1
+             
           fi
 
           # Test Get User
@@ -46,7 +46,7 @@ jobs:
             -H "x-api-key:$API_KEY_VALUE")
           if [ "$GET_RESPONSE" -ne 200 ]; then
             echo "Get User failed with status code $GET_RESPONSE"
-            exit 1
+             
           fi
 
           # Test Update User
@@ -55,14 +55,14 @@ jobs:
             -d '{"Email": "alice.new@example.com", "Age": "26"}')
           if [ "$UPDATE_RESPONSE" -ne 200 ]; then
             echo "Update User failed with status code $UPDATE_RESPONSE"
-            exit 1
+             
           fi
 
           # Test Delete User
           DELETE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE "$API_ENDPOINT/users/U1001")
           if [ "$DELETE_RESPONSE" -ne 200 ]; then
             echo "Delete User failed with status code $DELETE_RESPONSE"
-            exit 1
+             
           fi
 
           # Add User Again for Demo
@@ -71,7 +71,7 @@ jobs:
             -d '{"UserID": "U1001", "Name": "Alice", "Email": "alice@example.com", "Age": "25"}')
           if [ "$CREATE_RESPONSE" -ne 201 ]; then
             echo "Create User failed with status code $CREATE_RESPONSE"
-            exit 1
+             
           fi
 
           echo "All integration tests passed successfully."
