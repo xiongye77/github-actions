@@ -374,59 +374,59 @@ Resources:
         PriceClass: PriceClass_100
         WebACLId: !GetAtt MyWebACL.Arn
                  
-LambdaExecutionRole:
-    Type: AWS::IAM::Role
-    Properties: 
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: LambdaSSMAccess
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action: 
-                  - ssm:PutParameter
-                Resource: '*'
-              - Effect: Allow
-                Action: 
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource: '*'
+  LambdaExecutionRole:
+      Type: AWS::IAM::Role
+      Properties: 
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: LambdaSSMAccess
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action: 
+                    - ssm:PutParameter
+                  Resource: '*'
+                - Effect: Allow
+                  Action: 
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource: '*'
 
-  # Lambda Function
+    # Lambda Function
   WriteToSSMLambda:
-    Type: AWS::Lambda::Function
-    Properties:
-      Handler: index.lambda_handler
-      Role: !GetAtt LambdaExecutionRole.Arn
-      Runtime: python3.10
-      Code:
-        ZipFile: |
-          import json
-          import boto3
-          ssm = boto3.client('ssm')
-          def lambda_handler(event, context):
-              parameter_name = event['ResourceProperties']['ParameterName']
-              parameter_value = event['ResourceProperties']['ParameterValue']
-              response = ssm.put_parameter(
-                  Name=parameter_name,
-                  Value=parameter_value,
-                  Type='String',
-                  Overwrite=True
-              )
-              return {
-                  'statusCode': 200,
-                  'body': json.dumps('Parameter stored in SSM!')
-              }
+      Type: AWS::Lambda::Function
+      Properties:
+        Handler: index.lambda_handler
+        Role: !GetAtt LambdaExecutionRole.Arn
+        Runtime: python3.10
+        Code:
+          ZipFile: |
+            import json
+            import boto3
+            ssm = boto3.client('ssm')
+            def lambda_handler(event, context):
+                parameter_name = event['ResourceProperties']['ParameterName']
+                parameter_value = event['ResourceProperties']['ParameterValue']
+                response = ssm.put_parameter(
+                    Name=parameter_name,
+                    Value=parameter_value,
+                    Type='String',
+                    Overwrite=True
+                )
+                return {
+                    'statusCode': 200,
+                    'body': json.dumps('Parameter stored in SSM!')
+                }
 
-  # Custom Resource to call Lambda
+    # Custom Resource to call Lambda
   WriteSSMCustomResource:
     Type: Custom::WriteSSMParameter
     Properties:
