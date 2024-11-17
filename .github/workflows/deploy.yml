@@ -11,6 +11,7 @@ on:
 permissions:
   id-token: write
   contents: read
+  security-events: write
 
 jobs:
   sast:
@@ -52,6 +53,7 @@ jobs:
           path: dependency-check-report
   provision-eks:
     name: 'Provision EKS Cluster'
+    needs: [sca]
     uses: ./.github/workflows/provision-eks.yml
     with:
       aws_region: us-east-1
