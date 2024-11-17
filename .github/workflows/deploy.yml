@@ -76,19 +76,20 @@ jobs:
           path: dependency-check-report
   
   
-  build-deploy-serverless:
-    name: 'Build and Deploy Serverless Components'
-    needs: [sca]
-    uses: ./.github/workflows/build-deploy-serverless.yml
-    with:
-      aws_region: us-east-1
-      role_to_assume: arn:aws:iam::582140066777:role/github-action-role  # Update with your role ARN
+  #build-deploy-serverless:
+  #  name: 'Build and Deploy Serverless Components'
+  #  needs: [sca]
+  #  uses: ./.github/workflows/build-deploy-serverless.yml
+  #  with:
+  #    aws_region: us-east-1
+  #    role_to_assume: arn:aws:iam::582140066777:role/github-action-role  # Update with your role ARN
   
   #OWASP ZAP scan web site   
   zap_scan:
     runs-on: ubuntu-latest
     name: Scan the web applications
-    needs: [build-deploy-serverless]
+    #needs: [build-deploy-serverless]
+    needs: [sca]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -101,7 +102,11 @@ jobs:
           target: 'https://apigw-cdn.yexiongcodetest.com/'
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a'
-
+      - name: Upload ZAP HTML Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: zap-report
+          path: zap-report.html
 
   integration-tests:
     name: 'Run Integration Tests'
