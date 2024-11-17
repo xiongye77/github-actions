@@ -12,7 +12,7 @@ permissions:
   id-token: write
   contents: read
   security-events: write
-
+  issues: write
 jobs:
 
   
