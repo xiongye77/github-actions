@@ -7,6 +7,10 @@ Using Synk https://snyk.io/ to perform Software Composition Analysis (SCA)
 
 <img width="1080" alt="image" src="https://github.com/user-attachments/assets/789ae184-fe2f-4e08-b053-5245ee26c587">
 
+<img width="1665" alt="image" src="https://github.com/user-attachments/assets/95085816-ccdc-4039-88fb-3d7b16e4e01c">
+
+
+
 On your Mac check your IP address and add it to IP ruleset to allow traffic to Cloudfront 
 
 <img width="1346" alt="image" src="https://github.com/user-attachments/assets/c785cf29-eb40-4220-be46-69c1faea1a49">
