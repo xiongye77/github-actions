@@ -1,3 +1,9 @@
+Devsecops
+
+Using Synk https://snyk.io/ to perform Software Composition Analysis (SCA)
+<img width="1722" alt="image" src="https://github.com/user-attachments/assets/2c2e1ff1-6068-4415-96ce-0a4d835bab77">
+
+
 <img width="1080" alt="image" src="https://github.com/user-attachments/assets/789ae184-fe2f-4e08-b053-5245ee26c587">
 
 On your Mac check your IP address and add it to IP ruleset to allow traffic to Cloudfront 
