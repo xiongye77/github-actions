@@ -14,8 +14,57 @@ permissions:
   security-events: write
 
 jobs:
+  snyk-code-scan:
+    name: Snyk Code Scan (SAST)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Snyk Code Scan
+        uses: snyk/actions/cli@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: test --all-projects --severity-threshold=high
+
+  snyk-dependency-scan:
+    name: Snyk Dependency Scan (SCA)
+    needs: [snyk-code-scan]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Snyk Dependency Scan
+        uses: snyk/actions/cli@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: test --severity-threshold=high
+  snyk-container-scan:
+    name: Snyk Container Image Scan
+    needs: [snyk-dependency-scan]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Docker Image
+        working-directory: ./.github/workflows/../.././infrastructure/k8s/
+        run: |
+          docker build -t snyk-scan-image:latest .
+
+      - name: Run Snyk Container Scan
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: snyk-scan-image:latest
+          args: test --severity-threshold=high
   sast:
     name: 'Static Code Analysis'
+    needs: [snyk-container-scan]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
