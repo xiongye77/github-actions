@@ -13,6 +13,43 @@ permissions:
   contents: read
 
 jobs:
+  sast:
+    name: 'Static Code Analysis'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: 'python' 
+          
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+  sca:
+    name: 'Dependency Vulnerability Scan'
+    runs-on: ubuntu-latest
+    needs: [sast]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Run Dependency-Check
+        uses: dependency-check/dependency-check-action@v2.1.0
+        with:
+          project: 'MyProject'
+          scan: '.'
+          format: 'ALL'
+          out: 'dependency-check-report'
+          failOnCVSS: '7'  # Fail if vulnerabilities with CVSS >= 7 are found
+
+      - name: Upload Dependency-Check Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: Dependency-Check Report
+          path: dependency-check-report
   provision-eks:
     name: 'Provision EKS Cluster'
     uses: ./.github/workflows/provision-eks.yml
