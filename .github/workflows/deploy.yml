@@ -74,38 +74,11 @@ jobs:
         with:
           name: Dependency-Check Report
           path: dependency-check-report
-  provision-eks:
-    name: 'Provision EKS Cluster'
-    needs: [sca]
-    uses: ./.github/workflows/provision-eks.yml
-    with:
-      aws_region: us-east-1
-      role_to_assume: arn:aws:iam::582140066777:role/github-action-role  # Update with your role ARN
   
-  deploy-to-eks:
-    name: 'Deploy Applications to EKS'
-    needs: [provision-eks]
-    uses: ./.github/workflows/deploy-to-eks.yml
-    with:
-      aws_region: us-east-1
-      role_to_assume: arn:aws:iam::582140066777:role/github-action-role  # Update with your role ARN
-    
-  echo-dns-name: 
-     runs-on: ubuntu-latest
-     name: 'echo alb dns name'
-     needs: [deploy-to-eks]
-     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: my-output
-      - name: Read the output
-        run: |
-          cat output.txt
   
   build-deploy-serverless:
     name: 'Build and Deploy Serverless Components'
-    needs: [echo-dns-name]
+    needs: [sca]
     uses: ./.github/workflows/build-deploy-serverless.yml
     with:
       aws_region: us-east-1
