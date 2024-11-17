@@ -11,6 +11,10 @@ The scan result as following: Critical severity vulnerability found in zlib/zlib
 
 <img width="1080" alt="image" src="https://github.com/user-attachments/assets/789ae184-fe2f-4e08-b053-5245ee26c587">
 
+# Run OWASP ZAP to our site 
+OWASP ZAP is a penetration testing tool that helps developers and security professionals detect and find vulnerabilities in web applications. OWASP ZAP performs multiple security functions including: Passively scanning web requests. Using dictionary lists to search for files and folders on web servers.
+<img width="1325" alt="image" src="https://github.com/user-attachments/assets/75cdae9b-05e8-4106-9abf-38d71d6b73f5">
+<img width="1287" alt="image" src="https://github.com/user-attachments/assets/070a95b7-8717-4c5f-8cdf-b3eeed49c996">
 
 
 # Cloudformation event order 
