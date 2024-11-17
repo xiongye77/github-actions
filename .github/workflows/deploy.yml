@@ -20,11 +20,11 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/python@master
+        working-directory: ./.github/workflows/../.././lambda/create_user/
+        run: snyk code test app.py
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --all-projects --severity-threshold=high
+      
 
   
   snyk-container-scan:
