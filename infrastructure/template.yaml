@@ -426,12 +426,12 @@ Resources:
                 }
 
     # Custom Resource to call Lambda
-  WriteSSMCustomResource:
-    Type: Custom::WriteSSMParameter
-    Properties:
-      ServiceToken: !GetAtt WriteToSSMLambda.Arn
-      ParameterName: "/apigw/apikey-id"
-      ParameterValue: !Ref MyApiKey
+  #WriteSSMCustomResource:
+  #  Type: Custom::WriteSSMParameter
+  #  Properties:
+  #    ServiceToken: !GetAtt WriteToSSMLambda.Arn
+  #    ParameterName: "/apigw/apikey-id"
+  #    ParameterValue: !Ref MyApiKey
 
 Outputs:
   APIGWCDNURL:
