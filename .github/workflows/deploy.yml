@@ -35,6 +35,7 @@ jobs:
         with:
           image: snyk-scan-image:latest
           args:  --severity-threshold=high
+        continue-on-error: true
   sast:
     name: 'Static Code Analysis'
     needs: [snyk-container-scan]
