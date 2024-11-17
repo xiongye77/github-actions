@@ -7,9 +7,9 @@ Parameters:
     Type: String
     Description: "Custom domain name for CloudFront distribution"
     Default: "apigw-cdn.yexiongcodetest.com"  # Replace with your custom domain name
-  DNSName:
-    Type: String
-    Description: "The ALB name add as cloudfront origin"
+  #DNSName:
+  #  Type: String
+  #  Description: "The ALB name add as cloudfront origin"
 Resources:
     
   ApiGatewayCloudWatchLogsRole:
