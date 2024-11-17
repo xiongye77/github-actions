@@ -7,9 +7,9 @@ on:
       api_endpoint:
         required: true
         type: string
-      api_key:
-        required: true
-        type: string
+      #api_key:
+      #  required: true
+      #  type: string
 
 permissions:
   id-token: write
@@ -30,8 +30,8 @@ jobs:
       - name: Run Integration Tests
         run: |
           API_ENDPOINT=${{ inputs.api_endpoint }}
-          API_KEY_VALUE=${{ inputs.api_key }}
-
+          #API_KEY_VALUE=${{ inputs.api_key }}
+          
           # Test Create User
           CREATE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$API_ENDPOINT/users" \
             -H "Content-Type: application/json" \
