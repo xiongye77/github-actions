@@ -109,4 +109,4 @@ jobs:
     uses: ./.github/workflows/integration-tests.yml
     with:
       api_endpoint: ${{ needs.build-deploy-serverless.outputs.api_endpoint }}
-      api_key: ${{ needs.build-deploy-serverless.outputs.api_key }}
+      #api_key: ${{ needs.build-deploy-serverless.outputs.api_key }}
