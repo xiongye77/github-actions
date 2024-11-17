@@ -331,10 +331,10 @@ Resources:
             Id: ApiOrigin
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
-          - DomainName: !Ref DNSName
-            Id: ALBOrigin
-            CustomOriginConfig:
-              OriginProtocolPolicy: http-only
+          #- DomainName: !Ref DNSName
+          #  Id: ALBOrigin
+          #  CustomOriginConfig:
+          #    OriginProtocolPolicy: http-only
         Enabled: true
         DefaultCacheBehavior:
           TargetOriginId: ApiOrigin
