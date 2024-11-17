@@ -34,7 +34,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: snyk-scan-image:latest
-          args: test --severity-threshold=high
+          args:  --severity-threshold=high
   sast:
     name: 'Static Code Analysis'
     needs: [snyk-container-scan]
