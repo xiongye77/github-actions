@@ -20,9 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Set up Snyk CLI
-        uses: snyk/actions/setup@v2
-        with:
-          version: 'latest'
+        uses: snyk/actions/python@master
+   
           
       - name: Run Snyk to check for vulnerabilities
         working-directory: ./.github/workflows/../.././lambda/create_user/
