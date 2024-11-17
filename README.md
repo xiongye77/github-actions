@@ -5,9 +5,12 @@ Using Synk https://snyk.io/ to perform Software Composition Analysis (SCA)
 
 <img width="1310" alt="image" src="https://github.com/user-attachments/assets/fc49c82e-24a9-4141-8bd3-868dc444d0f6">
 
-<img width="1080" alt="image" src="https://github.com/user-attachments/assets/789ae184-fe2f-4e08-b053-5245ee26c587">
+The scan result as following: Critical severity vulnerability found in zlib/zlib1g
 
 <img width="1665" alt="image" src="https://github.com/user-attachments/assets/95085816-ccdc-4039-88fb-3d7b16e4e01c">
+
+<img width="1080" alt="image" src="https://github.com/user-attachments/assets/789ae184-fe2f-4e08-b053-5245ee26c587">
+
 
 
 
