@@ -13,6 +13,9 @@ The scan result as following: Critical severity vulnerability found in zlib/zlib
 
 
 
+# Cloudformation event order 
+<img width="1728" alt="image" src="https://github.com/user-attachments/assets/9d3b096f-b197-46ee-aafe-68a259cb4f74">
+
 
 On your Mac check your IP address and add it to IP ruleset to allow traffic to Cloudfront 
 
