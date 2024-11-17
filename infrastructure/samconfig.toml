@@ -3,7 +3,7 @@ version = 0.1
 [default]
 [default.global]
 [default.global.parameters]
-stack_name = "my-serverless-app"
+stack_name = "serverless-app"
 s3_bucket = "aws-sam-cli-managed-default-582140066777"
 s3_prefix = "sam/prod"
 region = "us-east-1"
