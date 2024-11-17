@@ -1,8 +1,9 @@
-Devsecops
+# Devsecops
 
 Using Synk https://snyk.io/ to perform Software Composition Analysis (SCA)
 <img width="1722" alt="image" src="https://github.com/user-attachments/assets/2c2e1ff1-6068-4415-96ce-0a4d835bab77">
 
+<img width="1310" alt="image" src="https://github.com/user-attachments/assets/fc49c82e-24a9-4141-8bd3-868dc444d0f6">
 
 <img width="1080" alt="image" src="https://github.com/user-attachments/assets/789ae184-fe2f-4e08-b053-5245ee26c587">
 
