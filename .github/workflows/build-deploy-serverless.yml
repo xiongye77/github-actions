@@ -70,15 +70,15 @@ jobs:
               aws s3 mb s3://${{ steps.extract_s3_bucket_aws_region.outputs.s3_bucket }} --region ${{ steps.extract_s3_bucket_aws_region.outputs.aws_region }}
           fi
           
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: my-output
+      #- name: Download artifact
+      #  uses: actions/download-artifact@v3
+      #  with:
+      #    name: my-output
 
-      - name: Read the output
-        run: |
-          cat output.txt
-          lb_dns_name=$(cat  output.txt | cut -d' ' -f1)
+      #- name: Read the output
+      #  run: |
+      #    cat output.txt
+      #    lb_dns_name=$(cat  output.txt | cut -d' ' -f1)
 
       - name : Validate the SAM application
         run: |
@@ -86,14 +86,14 @@ jobs:
           
       # Step 5: Build the SAM application
       - name: Build SAM Application
-        run: |
-          cat output.txt
-          lb_dns_name=$(cat  output.txt | awk -F '=' '{print $2}')
-          sam build --template-file infrastructure/template.yaml 
+        run: 
+      #    cat output.txt
+      #    lb_dns_name=$(cat  output.txt | awk -F '=' '{print $2}')
+           sam build --template-file infrastructure/template.yaml 
 
       # Step 6: Deploy the SAM application
       - name: Deploy SAM Application
-        run: |
-          lb_dns_name=$(cat  output.txt | awk -F '=' '{print $2}')
-          sam deploy --config-file infrastructure/samconfig.toml --parameter-overrides ParameterKey=DNSName,ParameterValue=$lb_dns_name
-
+        run: 
+          #lb_dns_name=$(cat  output.txt | awk -F '=' '{print $2}')
+          #sam deploy --config-file infrastructure/samconfig.toml --parameter-overrides ParameterKey=DNSName,ParameterValue=$lb_dns_name
+          sam deploy --config-file infrastructure/samconfig.toml
