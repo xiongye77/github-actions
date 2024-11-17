@@ -94,7 +94,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: master
+          ref: github-action-api-gw-lambda-dynamodb
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.6.1
         with:
