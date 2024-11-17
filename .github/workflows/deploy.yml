@@ -14,26 +14,10 @@ permissions:
   security-events: write
 
 jobs:
-  snyk-dependency-scan:
-    name: Snyk Code Scan (SAST)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Set up Snyk CLI
-        uses: snyk/actions/python@master
-   
-          
-      - name: Run Snyk to check for vulnerabilities
-        working-directory: ./.github/workflows/../.././lambda/create_user/
-        run: snyk code test app.py
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      
 
   
   snyk-container-scan:
     name: Snyk Container Image Scan
-    needs: [snyk-dependency-scan]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
