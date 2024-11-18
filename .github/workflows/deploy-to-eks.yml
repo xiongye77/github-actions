@@ -78,6 +78,10 @@ jobs:
           # Push the Docker image to ECR
           docker push ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
 
+      - name: Initiate ECR Image Scan
+        run: |
+         aws ecr start-image-scan --repository-name ${ECR_REGISTRY}/${ECR_REPO}  --image-id imageTag=${IMAGE_TAG}
+
       - name: Deploy Kubernetes Manifests deployment hpa service 
         working-directory: ./.github/workflows/../.././infrastructure/
         run: |
