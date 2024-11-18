@@ -78,10 +78,11 @@ jobs:
           # Push the Docker image to ECR
           docker push ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
 
-      - name: Deploy Kubernetes Manifests
+      - name: Deploy Kubernetes Manifests deployment hpa service 
         working-directory: ./.github/workflows/../.././infrastructure/
         run: |
           kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/hpa.yaml
           kubectl apply -f k8s/service.yaml
 
       - name: Deploy NGINX
