@@ -270,7 +270,7 @@ Resources:
             SampledRequestsEnabled: true
           Statement:
             RateBasedStatement:
-              Limit: 1000
+              Limit: 4000
               AggregateKeyType: IP
 
           
