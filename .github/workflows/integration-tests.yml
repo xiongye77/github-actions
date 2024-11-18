@@ -29,7 +29,13 @@ jobs:
 
       - name: Run Integration Tests
         run: |
-          API_ENDPOINT=${{ inputs.api_endpoint }}
+          REGION=us-east-1
+          API_NAME="UsersApi" 
+          API_ID=$(aws apigateway get-rest-apis --output json | jq -r --arg name "$API_NAME" '.items[] | select(.name == $name) | .id')
+          STAGE_NAME=$(aws apigateway get-stages --rest-api-id "$API_ID" --output json | jq -r '.item[0].stageName')
+          API_ENDPOINT="https://$API_ID.execute-api.$REGION.amazonaws.com/$STAGE_NAME"
+          echo $API_ENDPOINT
+          
           #API_KEY_VALUE=${{ inputs.api_key }}
           API_KEY_VALUE=$(aws apigateway get-api-keys --include-values --output json | jq -r --arg name "MyApiKey"  |grep value |awk -F'"' '/"value":/ {print $4}')
           echo $API_KEY_VALUE
