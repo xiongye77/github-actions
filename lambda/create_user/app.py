@@ -2,6 +2,7 @@ import json
 import boto3
 from botocore.exceptions import ClientError
 
+
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('Users')  # Replace with your DynamoDB table name
 
