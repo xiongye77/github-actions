@@ -7,6 +7,7 @@ table = dynamodb.Table('Users')  # Replace with your DynamoDB table name
 
 
 
+
 def handler(event, context):
     try:
         data = json.loads(event['body'])
