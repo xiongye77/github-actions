@@ -82,6 +82,32 @@ jobs:
         run: |
          aws ecr start-image-scan --repository-name ${ECR_REGISTRY}/${ECR_REPO}  --image-id imageTag=${IMAGE_TAG}
 
+      - name: Wait for Scan to Complete
+        run: |
+         aws ecr wait image-scan-complete  --repository-name ${ECR_REGISTRY}/${ECR_REPO}  --image-id imageTag=${IMAGE_TAG}
+
+      - name: Get ECR Scan Results
+  
+        run: |
+         aws ecr describe-image-scan-findings \
+         --repository-name ${ECR_REGISTRY}/${ECR_REPO} \
+         --image-id imageTag=${IMAGE_TAG}  > scan_results.json
+         cat scan_results.json
+
+      - name: Evaluate Scan Findings
+        run: |
+         CRITICAL_COUNT=$(jq '.imageScanFindings.findingSeverityCounts.CRITICAL // 0' scan_results.json)
+         HIGH_COUNT=$(jq '.imageScanFindings.findingSeverityCounts.HIGH // 0' scan_results.json)
+         echo "Critical vulnerabilities: $CRITICAL_COUNT"
+         echo "High vulnerabilities: $HIGH_COUNT"
+         if [ "$CRITICAL_COUNT" -gt 0 ] || [ "$HIGH_COUNT" -gt 0 ]; then
+          echo "Security scan failed due to critical or high vulnerabilities."
+      
+         else
+          echo "No critical or high vulnerabilities found."
+         fi
+
+
       - name: Deploy Kubernetes Manifests deployment hpa service 
         working-directory: ./.github/workflows/../.././infrastructure/
         run: |
