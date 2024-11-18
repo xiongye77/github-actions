@@ -31,7 +31,7 @@ jobs:
         run: |
           API_ENDPOINT=${{ inputs.api_endpoint }}
           #API_KEY_VALUE=${{ inputs.api_key }}
-          API_KEY_VALUE = $(aws apigateway get-api-keys --include-values --output json | jq -r --arg name "MyApiKey"  |grep value |awk -F'"' '/"value":/ {print $4}')
+          API_KEY_VALUE=$(aws apigateway get-api-keys --include-values --output json | jq -r --arg name "MyApiKey"  |grep value |awk -F'"' '/"value":/ {print $4}')
           echo $API_KEY_VALUE
           # Test Create User
           CREATE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$API_ENDPOINT/users" \
