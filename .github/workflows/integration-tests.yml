@@ -25,7 +25,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::582140066777:role/github-action-role  # Update with your role ARN
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: us-east-1
 
       - name: Run Integration Tests
         run: |
